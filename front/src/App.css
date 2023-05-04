@@ -1,0 +1,56 @@
+html,
+body {
+  height: 100%;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@font-face {
+  font-family: 'MyFont';
+  src: local('MyFont'), url(Painter.ttf) format('truetype');
+}
+
+.font-logo {
+  font-family: 'MyFont';
+}
+
+.links a {
+  margin-left: 30px;
+  padding: 6px;
+}
+
+.toolbar a {
+  text-decoration: none;
+}
+
+.toolbar a:link {
+  color: #000000;
+}
+
+.toolbar a:visited {
+  color: #000000;
+}
+
+.toolbar a:hover {
+  color: #000000;
+}
+
+.linkTool {
+  font-size: 18px;
+}
+
+.dl {
+  white-space: pre-line;
+}
+
+.linkProfile {
+  min-width: 52vw;
+  text-align: right;
+}
