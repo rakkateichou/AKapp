@@ -38,11 +38,16 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
 
     override suspend fun searchTasks(query: String, page: Int, subjects: List<String>): List<TaskEntity> = transaction {
         // fetch next 20 tasks in tasks for passed subjects
+//        Tasks.select {
+//            (((Tasks.question like "%$query%")
+//                    or (Tasks.answer like "%$query%"))
+//                    and (Tasks.subjectName inList subjects))
+//        }.limit(20, ((page - 1) * 20).toLong()).mapToTasks()
+
         Tasks.select {
-            (((Tasks.question like "%$query%")
+            ((Tasks.question like "%$query%")
                     or (Tasks.answer like "%$query%"))
-                    and (Tasks.subjectName inList subjects))
-        }.limit(20, ((page - 1) * 20).toLong()).mapToTasks()
+        }.mapToTasks()
     }
 
     private fun Query.mapToTasks() = this.map {

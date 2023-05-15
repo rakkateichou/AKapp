@@ -62,7 +62,7 @@ const SignIn = () => {
                     </Button>
                 </form>
                 <br/>
-                <a href="/signup">Уже зарегистрированы?</a>
+                <a href="/signup">Ещё не зарегистрированы?</a>
             </Container>
             {status && <h5>Происходит авторизация</h5>}
             {badLogin && <h5>Неверный логин или пароль</h5>}

@@ -11,17 +11,21 @@ const Net = () => {
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
     const [searching, setSearching] = useState(false);
+    const [notFound, setNotFound] = useState(false);
     const [searchingAllSubjects, setSearchingAllSubjects] = useState(true);
     const [subject, setSubject] = useState("");
     const search = () => {
+        var qt = query
         setPage(1)
         setSearching(true)
+        setNotFound(false)
         // получение результатов поиска
-        ky.get("http://localhost:8080/int", {searchParams: { query: query, page: page, subjects: subject }, timeout: 900000, retry: 3}).json()
+        ky.get("http://localhost:8080/int", {searchParams: { query: qt, page: page, subjects: subject }, timeout: 900000, retry: 3}).json()
             .then((data) => {
+                if (data.length === 0) setNotFound(true)
                 console.log(data);
                 setResults(data);
-                setSearching(false)
+                setSearching(false);
             })
     }
     const searchNextPage = () => {
@@ -86,6 +90,7 @@ const Net = () => {
                     <CircularProgress style={{marginTop: '50px'}}/>
                     <h5>Загрузка, подождите...</h5> 
                 </>}
+                {notFound && <h4>Ничего не найдено</h4>}
                 {results.length > 0 &&
                     <>
                         {results.map(result => (

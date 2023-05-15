@@ -54,6 +54,7 @@ fun Application.configureRouting(database: Database) {
 
         get("/int") {
             val query = call.request.queryParameters["query"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            println(query)
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
             var subjects = call.request.queryParameters.getAll("subjects")?: listOf()
             subjects = subjects.filter { it != "" }

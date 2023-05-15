@@ -1,18 +1,21 @@
 import { Paper } from "@mui/material";
+import ky from "ky";
 import { useEffect, useState } from "react";
 
 const TaskList = () => {
     // список задач
     const [tasks, setTasks] = useState([]);
+    const [numOfTasks, setNumOfTasks] = useState(0);
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     useEffect(() => {
-        // закгрузка задач с сервера
+        // загрузка задач с сервера
         fetch("http://localhost:8080/local/all").then(resp => resp.json())
             .then((res) => setTasks(res))
     }, []);
     // элемент со списком задач 
     return (<>
         <h2>Все задачи</h2>
+        Всего задач в БД - {tasks.length}
         <Paper elevation={3} style={paperStyle}>
             {tasks.map(task => (
                 <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={task.id}>

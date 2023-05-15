@@ -23,10 +23,14 @@ const SignUp = () => {
         console.log(user);
         ky.put("http://localhost:8080/user", { json: user }).json().then((data) => {
             console.log(data);
-            setBadRegistration(false);
-            cookies.set('user', user, { path: '/' });
-            navigate("/profile")
-            window.location.reload();
+            if (data !== -1) {
+                setBadRegistration(false);
+                cookies.set('user', user, { path: '/' });
+                navigate("/profile")
+                window.location.reload();
+            } else {
+                setBadRegistration(true);
+            }
         }).catch((error) => {
             console.log(error);
             setBadRegistration(true);
