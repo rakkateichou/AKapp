@@ -35,6 +35,8 @@ services:
       retries: 80
 
   finally:
+    build:
+      context: .
     depends_on:
       - backend
       - fronend
