@@ -34,7 +34,7 @@ services:
       timeout: 2s
       retries: 80
 
-  finally:
+  shell:
     image: alpine
     depends_on:
       - backend
