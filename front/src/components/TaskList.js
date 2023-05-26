@@ -1,6 +1,7 @@
 import { Paper } from "@mui/material";
 import ky from "ky";
 import { useEffect, useState } from "react";
+import backendUrl from "../backendUrl";
 
 const TaskList = () => {
     // список задач
@@ -9,7 +10,7 @@ const TaskList = () => {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     useEffect(() => {
         // загрузка задач с сервера
-        fetch("http://localhost:8080/local/all").then(resp => resp.json())
+        fetch(`${backendUrl}/local/all`).then(resp => resp.json())
             .then((res) => setTasks(res))
     }, []);
     // элемент со списком задач 

@@ -5,6 +5,7 @@ import { Container } from '@mui/system';
 import { Paper } from '@mui/material';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import backendUrl from '../backendUrl';
 
 export default function AddTask() {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
@@ -13,7 +14,7 @@ export default function AddTask() {
 
     const handleClick = (e) => {
         const task = { question, answer }
-        fetch("http://localhost:8080/task", {
+        fetch(`${backendUrl}/task`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(task)

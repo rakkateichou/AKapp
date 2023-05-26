@@ -54,3 +54,12 @@ body {
   min-width: 52vw;
   text-align: right;
 }
+
+.profile {
+  text-align: left;
+  padding-left: 30px;
+}
+
+.profileInfo {
+  padding: 10px;
+}

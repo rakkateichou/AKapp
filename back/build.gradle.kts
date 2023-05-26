@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.simplejavamail:simple-java-mail:8.1.0")
     implementation("com.mysql:mysql-connector-j:8.0.32")
     implementation("org.jsoup:jsoup:1.13.1")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")

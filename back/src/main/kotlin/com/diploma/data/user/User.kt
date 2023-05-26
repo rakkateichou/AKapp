@@ -7,5 +7,8 @@ data class User(
     val id: Long = -1,
     val login: String,
     val password: String,
-    val name: String
+    val email: String,
+    val name: String,
+    val info: String = "Пользователь системы SOTVETIS",
+    val restoreCode: String = ""
 )

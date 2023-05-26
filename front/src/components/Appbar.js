@@ -9,11 +9,13 @@ import { useEffect, useState } from 'react';
 
 // заголовок страницы
 export default function Appbar() {
+  const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cookies = new Cookies();
   useEffect(() => {
     if (cookies.get('user')) {
       setIsLoggedIn(true);
+      setUser(cookies.get('user'));
     } else {
       setIsLoggedIn(false);
     }
@@ -56,7 +58,7 @@ export default function Appbar() {
           }
           {isLoggedIn &&
             <div className='linkProfile'>
-              <Link to='/profile'><span className='linkTool'>Профиль</span></Link>
+              <Link to='/profile'><span className='linkTool'>Профиль {user.name}</span></Link>
             </div>
           }
           {/* <Button color="inherit">Login</Button> */}

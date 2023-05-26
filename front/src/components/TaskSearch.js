@@ -1,6 +1,7 @@
 import { Paper } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
+import backendUrl from "../backendUrl";
 
 const TaskSearch = () => {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
@@ -9,8 +10,12 @@ const TaskSearch = () => {
     // результаты поиска
     const [results, setResults] = useState([]);
     useEffect(() => {
+        if (query === '') {
+            setResults([])
+            return
+        }
         // получение результатов поиска
-        fetch("http://localhost:8080/local?query=" + query)
+        fetch(`${backendUrl}/local?query=` + query)
             .then((resp) => resp.json())
             .then((res) => setResults(res))
     }, [query])

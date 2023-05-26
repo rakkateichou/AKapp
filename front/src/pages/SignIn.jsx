@@ -2,8 +2,9 @@ import ky from "ky";
 import { useRef } from "react";
 import { useState } from "react";
 import Cookies from 'universal-cookie';
-import { redirect, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { Container, TextField, Button } from "@mui/material";
+import backendUrl from "../backendUrl";
 
 const SignIn = () => {
     const [status, setStatus] = useState(false);
@@ -17,9 +18,9 @@ const SignIn = () => {
         redirect("/")
         event.preventDefault();
         setStatus(true);
-        ky.post("http://localhost:8080/user", { json: { login: login, password: password } }).json().then((data) => {
+        ky.post(`${backendUrl}/user`, { json: { login: login, password: password } }).json().then((data) => {
             console.log(data);
-            cookies.set('user', data, { path: '/' });
+            cookies.set('user', data);
             setBadLogin(false);
             navigate("/profile");
             window.location.reload();
@@ -62,7 +63,8 @@ const SignIn = () => {
                     </Button>
                 </form>
                 <br/>
-                <a href="/signup">Ещё не зарегистрированы?</a>
+                <Link to="/signup">Ещё не зарегистрированы?</Link><br/><br/>
+                <Link to="/restore">Забыли пароль?</Link>
             </Container>
             {status && <h5>Происходит авторизация</h5>}
             {badLogin && <h5>Неверный логин или пароль</h5>}
