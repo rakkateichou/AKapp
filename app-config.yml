@@ -35,8 +35,7 @@ services:
       retries: 80
 
   finally:
-    build:
-      context: .
+    image: alpine
     depends_on:
       - backend
       - frontend
