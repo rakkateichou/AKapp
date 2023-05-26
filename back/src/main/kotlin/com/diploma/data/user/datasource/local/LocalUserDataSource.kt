@@ -73,7 +73,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
                 transaction[Users.password],
                 transaction[Users.email],
                 transaction[Users.name],
-                transaction[Users.info]
+                info = transaction[Users.info]
             )
         else null
     }

@@ -72,6 +72,7 @@ const SignUp = () => {
                         onChange={(e) => { setLogin(e.target.value) }}
                     /><br/> 
                     <TextField
+                        error={!isEmailValid}
                         style={{ marginTop: "7px", width: "70%" }}
                         label="Email"
                         variant="outlined"
@@ -80,6 +81,7 @@ const SignUp = () => {
                     /><br/>
                     {isEmailValid ? null : <h4 style={{color: 'red'}}>Некорректный email</h4>}
                     <TextField
+                        error={!isPasswordValid}
                         style={{ marginTop: "7px", width: "70%" }}
                         label="Пароль"
                         variant="outlined"
