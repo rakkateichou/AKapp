@@ -10,7 +10,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         val id = integer("id").autoIncrement().uniqueIndex()
         val question = text("question")
         val answer = text("answer")
-        val subjectName = text("subject_name").nullable().default("")
+        val subjectName = text("subject_name").nullable()
         override val primaryKey = PrimaryKey(id)
     }
 

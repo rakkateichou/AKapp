@@ -9,6 +9,6 @@ data class User(
     val password: String,
     val email: String,
     val name: String,
-    val info: String = "Пользователь системы SOTVETIS",
+    val info: String = "",
     val restoreCode: String = ""
 )

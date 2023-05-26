@@ -49,7 +49,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
             it[this.login] = user.login
             it[this.password] = up
             it[this.email] = user.email
-            it[this.info] = user.info
+            it[this.info] = "Пользователь системы SOTVETIS" // default info
             it[this.restoreCode] = "" // it's default value. it is here lol
         }
         return@transaction User(
