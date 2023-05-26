@@ -22,7 +22,7 @@ FROM nginx:alpine
 COPY --from=build-stage /app/build /usr/share/nginx/html
 
 # Copy the customized .htaccess file
-COPY .htaccess /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Expose the default Nginx port
 EXPOSE 80

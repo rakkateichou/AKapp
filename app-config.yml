@@ -34,5 +34,12 @@ services:
       timeout: 2s
       retries: 80
 
+  finally:
+    depends_on:
+      - backend
+      - fronend
+      - mysql
+    command: echo Сервер SOTVETIS запущен!
+
 volumes:
   sql_data:
