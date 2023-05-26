@@ -39,7 +39,7 @@ services:
       context: .
     depends_on:
       - backend
-      - fronend
+      - frontend
       - mysql
     command: echo Сервер SOTVETIS запущен!
 
