@@ -84,13 +84,15 @@ class Sdamgia : WebTaskParser {
                 for (qElement in task.select("div[class=pbody]").select("p")) {
                     questionBuilder.append(stringFromHtml(qElement.outerHtml())).append("\n");
                 }
-                val question = questionBuilder.toString().trim().replace("&nbsp;", " ");
+                val questionBuilderStr = questionBuilder.toString().trim()
+                if (!questionBuilderStr.contains(query)) continue // strict search
+                val question = questionBuilderStr.replace("&nbsp;", " ");
 
                 val answerBuilder = StringBuilder()
                 for ( aElement in task.select("div[class=solution]").select("p")) {
                     answerBuilder.append(stringFromHtml(aElement.outerHtml())).append("\n");
                 }
-                val answer = answerBuilder.toString().trim().replace("&nbsp;", " ");
+                val answer = answerBuilder.toString().trim().replace("&nbsp;", " ").replace("\n\n", "\n");
 
                 results.add(TaskEntity(id.get(), question, answer, subject));
                 id.getAndIncrement();

@@ -1,24 +1,27 @@
 import Cookies from 'universal-cookie';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Paper, Container, Grid, Typography, IconButton } from '@mui/material';
+import { TextField, Button, Paper, Container, Grid, Typography, IconButton, Modal, Box } from '@mui/material';
 import ky from 'ky';
 import backendUrl from '../backendUrl';
-import NewPasswordForm from '../components/NewPasswordForm';
+import NewPasswordModal from '../components/NewPasswordModal';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
+import ProfileModalContent from '../components/ProfileModalContent';
 
 
 const Profile = () => {
     const [user, setUser] = useState({});
     const [avatarUrl, setAvatarUrl] = useState(`${backendUrl}/users/default_avatar.png`);
 
-    // mb name and email later
     const [userInfo, setUserInfo] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpen = () => setOpenModal(true);
+    const handleClose = () => setOpenModal(false);
 
     const [isCPass, setIsCPass] = useState(false);
     const [isEditingInfo, setIsEditingInfo] = useState(false);
-    
+
     const [favorites, setFavorites] = useState([]);
 
     const cookies = new Cookies();
@@ -30,6 +33,13 @@ const Profile = () => {
         setUserInfo(data.info)
         user.info = data.info;
         cookies.set('user', user, { path: '/' });
+    }
+
+    const onModalSave = (newUser) => {
+        ky.put(`${backendUrl}/user/${user.login}/update`, {json: user}).json().then(() => {
+            user = newUser;
+            cookies.set('user', user, { path: '/' });
+        }).catch((error) => { console.log(error); })
     }
 
     useEffect(() => {
@@ -76,7 +86,7 @@ const Profile = () => {
             } else {
                 alert("Ошибка при изменении аватара");
             }
-        }).catch((error) => {console.log(error);})
+        }).catch((error) => { console.log(error); })
     }
 
     const handleEditInfo = () => {
@@ -86,19 +96,30 @@ const Profile = () => {
             // mb cookies
             ky.put(`${backendUrl}/user/${user.login}/update`, { json: user }).json().then((data) => {
                 console.log(data);
-            }).catch((error) => {console.log(error);})
+            }).catch((error) => { console.log(error); })
         } else {
             setIsEditingInfo(true);
         }
     }
 
     const handleDeleteFavorite = (e, favorite) => {
-        ky.delete(`${backendUrl}/favorite/${favorite.id}`, {json: user}).json().then((data) => {
+        ky.delete(`${backendUrl}/favorite/${favorite.id}`, { json: user }).json().then((data) => {
             console.log(data)
-        }).catch((error) => {console.log(error);})
+        }).catch((error) => { console.log(error); })
         setFavorites(favorites.filter(item => item.id !== favorite.id))
     }
 
+    const boxStyle = {
+        textAlign: 'center',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        boxShadow: 24,
+        p: 4,
+    };
     const butStyle = { width: '200px', marginTop: '7px' }
 
     return (
@@ -107,8 +128,7 @@ const Profile = () => {
             <Grid container>
                 <Grid item xs={2.4}>
                     <img src={avatarUrl} alt="avatar" width="200px" height="200px" onClick={openFileDialog} /><br />
-                    <Button variant='outlined' style={butStyle} onClick={() => setIsCPass(!isCPass)}>Сменить пароль</Button><br />
-                    {isCPass && <NewPasswordForm />}
+                    <Button variant='outlined' style={butStyle} onClick={handleOpen}>Редактировать</Button><br />
                     <Button variant='contained' style={butStyle} onClick={logout}>Выйти</Button>
                 </Grid>
                 <Grid item xs={9.6}>
@@ -143,19 +163,28 @@ const Profile = () => {
                     <div style={{ textAlign: 'center' }}>
                         <h4>Избранные вопросы</h4>
                         {favorites.map((favorite) => (
-                                <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={favorite.id}>
+                            <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={favorite.id}>
                                 <span style={{ color: "gray" }}>ID: {favorite.id}</span><br />
-                                <div style={{ marginTop: "-30px",textAlign: "right" }}><IconButton><Delete onClick={(e) => {handleDeleteFavorite(e, favorite)}} /></IconButton></div>
+                                <div style={{ marginTop: "-30px", textAlign: "right" }}><IconButton><Delete onClick={(e) => { handleDeleteFavorite(e, favorite) }} /></IconButton></div>
                                 <b>Предмет: </b> {favorite.subjectName}<br />
                                 <b>Вопрос:</b><br /><span className="dl">{favorite.question}</span><br />
                                 <b>Решение:<b /></b><br /><span className="dl">{favorite.answer}</span>
                             </Paper>
-                            )
+                        )
                         )}
                     </div>
                 </Grid>
             </Grid>
             <input type='file' id='file' ref={inputFile} style={{ display: 'none' }} onChange={handleSelectedPicture} />
+            {/* would be good to move it + button to separate component */}
+            <Modal
+                open={openModal}
+                onClose={handleClose}
+            >
+                <Box sx={boxStyle}>
+                    <ProfileModalContent user={user} onSave={(user) => { onModalSave(user) }} />
+                </Box>
+            </Modal>
         </Container>
     );
 }
