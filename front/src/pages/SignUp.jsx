@@ -24,8 +24,8 @@ const SignUp = () => {
     }
 
     function isValidPassword(password) {
-        // password must contain at least 8 characters, 1 number, 1 uppercase letter, 1 lowercase letter
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password);
+        // password must contain at least 8 characters, 2 digits, 1 uppercase letter, 1 lowercase letter
+        return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z]).{8,}$/.test(password);
     }
 
     const handleSubmit = (e) => {
@@ -89,7 +89,7 @@ const SignUp = () => {
                         value={password}
                         onChange={(e) => { setPassword(e.target.value);setIsPasswordValid(isValidPassword(e.target.value)) }}
                     /><br/>
-                    {isPasswordValid ? null : <h4 style={{color: 'red'}}>Пароль должен содержать не менее 8 символов, 1 цифру, 1 заглавную и 1 строчную букву</h4>}
+                    {isPasswordValid ? null : <h4 style={{color: 'red'}}>Пароль должен содержать не менее 8 символов, 2 цифры, 1 заглавную и 1 строчную букву</h4>}
                     <TextField
                         style={{ marginTop: "7px", width: "70%" }}
                         label="Повторите пароль"
