@@ -2,6 +2,7 @@ package com.diploma.data.user.datasource.local
 
 import com.diploma.data.user.User
 import com.diploma.data.user.datasource.UserDataSource
+import com.diploma.isDev
 import com.diploma.util.AESEncryption
 import jakarta.mail.internet.InternetAddress
 import org.jetbrains.exposed.sql.*
@@ -25,7 +26,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
 
     var mailerBuilder = MailerBuilder
         .withSMTPServer("smtp.yandex.ru", 465, "sotvetis.project", "bddbyuawimtnzfpz")//""wokktvxkaqxkvpty") //"XK_Z4\"#Tf!TL^cm"
-        .withDebugLogging(true)
+        .withDebugLogging(isDev())
         .withProperty("mail.smtp.auth", "true")
         .withProperty("mail.smtp.starttls.enable", "true")
         .withProperty("mail.smtp.ssl.enable", "true")
