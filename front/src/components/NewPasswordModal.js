@@ -1,7 +1,7 @@
 import ky from "ky";
 import backendUrl from "../backendUrl";
 import Cookies from "universal-cookie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Button, Modal, Box } from "@mui/material";
 
 const NewPasswordModal = () => {
@@ -44,6 +44,10 @@ const NewPasswordModal = () => {
         })
         handleClose()
     }
+
+    useEffect(() => {
+        setIsPasswordValid(isValidPassword(newPassword))
+    }, [newPassword])
 
     const boxStyle = {
         textAlign: 'center',
@@ -96,7 +100,7 @@ const NewPasswordModal = () => {
                         <Button
                             variant='contained'
                             style={{ width: '200px', marginTop: '7px' }}
-                            onClick={changePassword}>Сменить
+                            onClick={() => {if (isPasswordValid) changePassword()}}>Сменить
                         </Button>
                     </form>
                 </Box>

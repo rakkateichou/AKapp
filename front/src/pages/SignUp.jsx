@@ -1,5 +1,5 @@
 import ky from "ky";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { Container, TextField, Button } from "@mui/material";
@@ -52,6 +52,14 @@ const SignUp = () => {
         })
     }
 
+    useEffect(() => {
+        setIsEmailValid(isValidEmail(email))
+    }, [email])
+
+    useEffect(() => {
+        setIsPasswordValid(isValidPassword(password))
+    }, [password])
+
     return (
         <>
             <h2>Регистрация</h2>
@@ -77,7 +85,7 @@ const SignUp = () => {
                         label="E-mail"
                         variant="outlined"
                         value={email}
-                        onChange={(e) => { setEmail(e.target.value); setIsEmailValid(isValidEmail(e.target.value)) }}
+                        onChange={(e) => { setEmail(e.target.value) }}
                     /><br/>
                     {isEmailValid ? null : <h4 style={{color: 'red'}}>Некорректный email</h4>}
                     <TextField
@@ -87,7 +95,7 @@ const SignUp = () => {
                         variant="outlined"
                         type="password"
                         value={password}
-                        onChange={(e) => { setPassword(e.target.value);setIsPasswordValid(isValidPassword(e.target.value)) }}
+                        onChange={(e) => { setPassword(e.target.value) }}
                     /><br/>
                     {isPasswordValid ? null : <h4 style={{color: 'red'}}>Пароль должен содержать не менее 8 символов, 2 цифры, 1 заглавную и 1 строчную букву</h4>}
                     <TextField

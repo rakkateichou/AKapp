@@ -22,6 +22,10 @@ const ProfileModalContent = (props) => {
         user.email = email;
     }, [name, login, email])
 
+    useEffect(() => {
+        setIsEmailValid(isValidEmail(email))
+    }, [email])
+
     return (
         <>
             <TextField
@@ -43,7 +47,7 @@ const ProfileModalContent = (props) => {
                 {isEmailValid ? null : <h4 style={{color: 'red'}}>Некорректный email</h4>}
             <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '350px', margin: '0 auto', marginTop: '20px' }}>
                 <NewPasswordModal />
-                <Button variant='contained' onClick={() => { onSave(user) }}>Сохранить</Button>
+                <Button variant='contained' onClick={() => { if(isEmailValid) onSave(user) }}>Сохранить</Button>
             </div>
         </>
     );
