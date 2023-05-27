@@ -17,7 +17,6 @@ fun Application.module() {
     //configureAuthentication(database)
     configureRouting(database)
     configureMonitoring(database)
-    environment.log.info("Сервер SOTVETIS запущен!")
 }
 
 //fun isDev() = System.getenv("DEV")?.isNotEmpty() ?: false

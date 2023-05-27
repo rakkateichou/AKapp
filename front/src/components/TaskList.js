@@ -2,6 +2,7 @@ import { Paper } from "@mui/material";
 import ky from "ky";
 import { useEffect, useState } from "react";
 import backendUrl from "../backendUrl";
+import TaskPaper from "./TaskPaper";
 
 const TaskList = () => {
     // список задач
@@ -13,17 +14,21 @@ const TaskList = () => {
         fetch(`${backendUrl}/local/all`).then(resp => resp.json())
             .then((res) => setTasks(res))
     }, []);
+
+    const handleDeleteTask= (e, task) => {
+        ky.delete(`${backendUrl}/local/${task.id}`).json().then((data) => {
+            console.log(data);
+        }).catch((error) => {console.log(error);})
+        setTasks(tasks.filter(item => item.id !== task.id))
+    }
+
     // элемент со списком задач 
     return (<>
         <h2>Все задачи</h2>
         Всего задач в БД - {tasks.length}
         <Paper elevation={3} style={paperStyle}>
             {tasks.map(task => (
-                <Paper elevation={6} style={{margin:"10px", padding:"15px", textAlign:"left"}} key={task.id}>
-                    <span style={{color: "gray"}}>ID: {task.id}</span><br/>
-                    <b>Вопрос:</b><br/>{task.question}<br/>
-                    <b>Ответ:<b/></b><br/>{task.answer}
-                </Paper>
+                <TaskPaper id={task.id} question={task.question} answer={task.answer} onDelete={(e) => {handleDeleteTask(e, task)}} />
             ))}
         </Paper>
     </>);

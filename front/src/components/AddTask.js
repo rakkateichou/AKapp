@@ -6,6 +6,7 @@ import { Paper } from '@mui/material';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import backendUrl from '../backendUrl';
+import ky from 'ky';
 
 export default function AddTask() {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
@@ -14,15 +15,9 @@ export default function AddTask() {
 
     const handleClick = (e) => {
         const task = { question, answer }
-        fetch(`${backendUrl}/task`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(task)
-        }).then(() => {
-            console.log("Новая задача добавлена!")
-        }).then(() => {
-            window.location.reload();
-        })
+        ky.put(`${backendUrl}/local`, {json: task}).json().then((data) => {
+            console.log(data);
+        }).catch((error) => { console.log(error); })
     }
 
     return (

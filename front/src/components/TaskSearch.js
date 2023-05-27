@@ -2,6 +2,8 @@ import { Paper } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
 import backendUrl from "../backendUrl";
+import TaskPaper from "./TaskPaper";
+import ky from "ky";
 
 const TaskSearch = () => {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
@@ -19,6 +21,14 @@ const TaskSearch = () => {
             .then((resp) => resp.json())
             .then((res) => setResults(res))
     }, [query])
+
+    const handleDeleteTask= (e, task) => {
+        ky.delete(`${backendUrl}/local/${task.id}`).json().then((data) => {
+            console.log(data);
+        }).catch((error) => {console.log(error);})
+        setResults(results.filter(item => item.id !== task.id))
+    }
+
     // элемент поиска
     return (
         <>
@@ -29,11 +39,7 @@ const TaskSearch = () => {
                 <>
                     <h2>Результаты поиска</h2>
                     {results.map(result => (
-                    <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={result.id}>
-                        <span style={{ color: "gray" }}>ID: {result.id}</span><br />
-                        <b>Вопрос:</b><br />{result.question}<br />
-                        <b>Ответ:<b /></b><br />{result.answer}
-                    </Paper>
+                        <TaskPaper id={result.id} question={result.question} answer={result.answer} onDelete={(e) => {handleDeleteTask(e, result)}} />
                     ))}
                 </>
             }

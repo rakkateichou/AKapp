@@ -141,6 +141,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         // update user info
         val update = transaction {
             Users.update({ Users.id eq user.id }) {
+                it[login] = user.login
                 it[name] = user.name
                 it[email] = user.email
                 it[info] = user.info
