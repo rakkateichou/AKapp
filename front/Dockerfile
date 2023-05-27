@@ -21,7 +21,7 @@ FROM nginx:alpine
 # Copy the built app from the previous stage
 COPY --from=build-stage /app/build /usr/share/nginx/html
 
-# Copy the customized .htaccess file
+# Copy the customized conf file
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Expose the default Nginx port
