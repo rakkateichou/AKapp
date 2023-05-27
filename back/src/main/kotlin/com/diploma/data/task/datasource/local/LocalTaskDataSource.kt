@@ -1,8 +1,11 @@
 package com.diploma.data.task.datasource.local
 
 import com.diploma.data.task.TaskEntity
+import com.diploma.data.task.presets.listOfTasks
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class LocalTaskDataSource(database: Database) : TaskDatabase {
@@ -16,7 +19,20 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
 
     init {
         transaction(database) {
+            var neededToBeFilled = true
+            exec("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = 'Tasks'") {rs ->
+                if(rs.next()) neededToBeFilled = false
+            }
             SchemaUtils.create(Tasks)
+            if (neededToBeFilled) {
+                listOfTasks().forEach { task ->
+                    Tasks.insert {
+                        it[question] = task.question
+                        it[answer] = task.answer
+                        it[subjectName] = task.subjectName
+                    }
+                }
+            }
         }
     }
 

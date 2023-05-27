@@ -20,5 +20,5 @@ fun Application.module() {
     environment.log.info("Сервер SOTVETIS запущен!")
 }
 
-fun isDev() = System.getenv("DEV")?.isNotEmpty() ?: false
-//fun isDev() = true
+//fun isDev() = System.getenv("DEV")?.isNotEmpty() ?: false
+fun isDev() = false
