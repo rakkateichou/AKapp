@@ -5,6 +5,8 @@ services:
     image: rakkateichou/sotvetis-backend:latest
     ports:
       - '8080:8080'
+    volumes:
+      - users:/app/users
     links:
       - mysql
     depends_on:
@@ -44,3 +46,4 @@ services:
 
 volumes:
   sql_data:
+  users:

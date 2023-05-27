@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=build-stage /app/build/libs/kolchanov-ktor-all.jar ./
 
 # Copy users
-COPY users ./
+COPY users ./users
 
 # Expose the server port
 EXPOSE 8080
