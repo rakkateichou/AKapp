@@ -137,17 +137,16 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         return@transaction transaction != null
     }
 
-    override suspend fun updateUser(user: User): Boolean {
+    override suspend fun updateUser(user: User): Boolean = transaction {
         // update user info
-        val update = transaction {
+        val update =
             Users.update({ Users.id eq user.id }) {
                 it[login] = user.login // not quite safe to do this but the customer is always right
                 it[name] = user.name
                 it[email] = user.email
                 it[info] = user.info
             }
-        }
-        return update > 0
+        return@transaction update > 0
     }
 
 }

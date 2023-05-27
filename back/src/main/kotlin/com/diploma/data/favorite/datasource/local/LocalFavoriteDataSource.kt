@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
     object Favorites : Table() {
-        val id = integer("id").autoIncrement()
+        val id = integer("id").autoIncrement() // todo: better to make it long
         val userId = long("user_id")
         val question = text("question")
         val answer = text("answer")

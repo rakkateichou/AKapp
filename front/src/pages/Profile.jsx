@@ -37,9 +37,11 @@ const Profile = () => {
 
     const onModalSave = (newUser) => {
         ky.put(`${backendUrl}/user/${user.login}/update`, {json: user}).json().then(() => {
-            user = newUser;
+            setUser(newUser);
             cookies.set('user', user, { path: '/' });
-        }).catch((error) => { console.log(error); })
+        }).catch((error) => { console.log(error); alert("Ошибка редактирования пользователя") })
+        setOpenModal(false)
+        // window.location.reload();
     }
 
     useEffect(() => {

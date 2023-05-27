@@ -19,7 +19,7 @@ const SignUp = () => {
     const cookies = new Cookies();
     const navigate = useNavigate();
 
-    function isValidEmail(email) {
+    function isValidEmail(email) { // better to also make checks on backend 
         return /\S+@\S+\.\S+/.test(email);
     }
 
@@ -74,7 +74,7 @@ const SignUp = () => {
                     <TextField
                         error={!isEmailValid}
                         style={{ marginTop: "7px", width: "70%" }}
-                        label="Email"
+                        label="E-mail"
                         variant="outlined"
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setIsEmailValid(isValidEmail(e.target.value)) }}
