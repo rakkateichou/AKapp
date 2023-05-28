@@ -18,6 +18,9 @@ export default function AddTask() {
         ky.put(`${backendUrl}/local`, {json: task}).json().then((data) => {
             console.log(data);
         }).catch((error) => { console.log(error); })
+        setQuestion("")
+        setAnswer("")
+        window.location.reload() // better rerender
     }
 
     return (
