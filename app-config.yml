@@ -1,10 +1,7 @@
 version: '3.9'
 services:
   backend:
-    deploy:
-      restart_policy:
-          condition: on-failure
-          delay: 20s
+    restart: always
     image: rakkateichou/sotvetis-backend:latest
     ports:
       - '8080:8080'

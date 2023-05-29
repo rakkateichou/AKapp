@@ -2,11 +2,13 @@ package com.diploma.data.task.datasource.local
 
 import com.diploma.data.task.TaskEntity
 import com.diploma.data.task.presets.listOfTasks
+import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.system.exitProcess
 
 class LocalTaskDataSource(database: Database) : TaskDatabase {
     object Tasks : Table() {
@@ -20,8 +22,13 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
     init {
         transaction(database) {
             var neededToBeFilled = true
-            exec("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = 'Tasks'") {rs ->
-                if(rs.next()) neededToBeFilled = false
+            try {
+                exec("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = 'Tasks'") { rs ->
+                    if (rs.next()) neededToBeFilled = false
+                }
+            } catch (e: Exception) {
+                println("Попытка подключения провалилась. Сервер MYSQL ещё не запущен")
+                exitProcess(100)
             }
             SchemaUtils.create(Tasks)
             if (neededToBeFilled) {
