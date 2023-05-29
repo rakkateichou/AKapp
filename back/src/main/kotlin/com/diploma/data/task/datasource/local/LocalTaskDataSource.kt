@@ -28,7 +28,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
                 }
             } catch (e: Exception) {
                 println("Попытка подключения провалилась. Сервер MYSQL ещё не запущен")
-                exitProcess(100)
+                exitProcess(-5)
             }
             SchemaUtils.create(Tasks)
             if (neededToBeFilled) {

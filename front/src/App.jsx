@@ -20,7 +20,7 @@ function App() {
         minHeight: '100vh'
       }}>
       <BrowserRouter>
-        <Appbar />
+        <Appbar cn="toolbar" appStyle={{backgroundColor: "#C0C0C0"}} />
         <Routes>
           <Route path='/' element={ <Main />} />
           <Route path='/db' element={ <Local /> } />

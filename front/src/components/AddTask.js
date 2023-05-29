@@ -16,11 +16,11 @@ export default function AddTask() {
     const handleClick = (e) => {
         const task = { question, answer }
         ky.put(`${backendUrl}/local`, {json: task}).json().then((data) => {
+            setQuestion("")
+            setAnswer("")
             console.log(data);
+            window.location.reload() // better rerender
         }).catch((error) => { console.log(error); })
-        setQuestion("")
-        setAnswer("")
-        window.location.reload() // better rerender
     }
 
     return (

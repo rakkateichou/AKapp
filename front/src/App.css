@@ -42,6 +42,22 @@ body {
   color: #000000;
 }
 
+.main-toolbar a {
+  text-decoration: none;
+}
+
+.main-toolbar a:link {
+  color: #FFF;
+}
+
+.main-toolbar a:visited {
+  color: #FFF;
+}
+
+.main-toolbar a:hover {
+  color: #FFF;
+}
+
 .linkTool {
   font-size: 18px;
 }

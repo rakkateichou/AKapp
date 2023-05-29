@@ -8,7 +8,8 @@ import Cookies from 'universal-cookie';
 import { useEffect, useState } from 'react';
 
 // заголовок страницы
-export default function Appbar() {
+export default function Appbar(props) {
+  const cn = props.cn
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cookies = new Cookies();
@@ -23,8 +24,8 @@ export default function Appbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ background: '#C0C0C0' }}>
-        <Toolbar className='toolbar'>
+      <AppBar position="static" style={props.appStyle} elevation={props.elevation}>
+        <Toolbar className={cn}>
           {/* <IconButton
             size="large"
             edge="start"
