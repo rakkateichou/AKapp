@@ -48,6 +48,7 @@ fun Application.configureRouting(database: Database) {
         }
         put("/local") {
             val task = call.receive<TaskEntity>()
+            print(task)
             localSource.saveTask(task)
             call.respond(HttpStatusCode.Created)
         }

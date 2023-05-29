@@ -20,10 +20,12 @@ const SignUp = () => {
     const navigate = useNavigate();
 
     function isValidEmail(email) { // better to also make checks on backend 
+        if (email === "") return true;
         return /\S+@\S+\.\S+/.test(email);
     }
 
     function isValidPassword(password) {
+        if (password === "") return true;
         // password must contain at least 8 characters, 2 digits, 1 uppercase letter, 1 lowercase letter
         return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z]).{8,}$/.test(password);
     }
@@ -33,7 +35,7 @@ const SignUp = () => {
             alert("Пароли не совпадают");
             return;
         }
-        if (!isEmailValid || !isPasswordValid) {
+        if (!isEmailValid || !isPasswordValid || (email === "") || (password === "")) {
             alert("Проверьте правильность введенных данных");
             return;
         }
