@@ -9,32 +9,40 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
 import ProfileModalContent from '../components/ProfileModalContent';
 
-
+// страница профиля
 const Profile = () => {
+    // состояние пользователя
     const [user, setUser] = useState({});
     const [avatarUrl, setAvatarUrl] = useState(`${backendUrl}/users/default_avatar.png`);
 
+    // состояние информации о пользователе
     const [userInfo, setUserInfo] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const handleOpen = () => setOpenModal(true);
     const handleClose = () => setOpenModal(false);
 
+    // состояние изменения пароля
     const [isCPass, setIsCPass] = useState(false);
     const [isEditingInfo, setIsEditingInfo] = useState(false);
 
+    // состояние избранных вопросов
     const [favorites, setFavorites] = useState([]);
 
+    // cookies
     const cookies = new Cookies();
     const navigate = useNavigate();
 
+    // файл аватара
     const inputFile = useRef(null)
 
+    // обновление информации о пользователе
     const updateUser = (data) => {
         setUserInfo(data.info)
         user.info = data.info;
         cookies.set('user', user, { path: '/' });
     }
 
+    // сохранение изменений
     const onModalSave = (newUser) => {
         ky.put(`${backendUrl}/user/${user.login}/update`, {json: user}).json().then(() => {
             setUser(newUser);
@@ -44,10 +52,12 @@ const Profile = () => {
         // window.location.reload();
     }
 
+    // получение информации о пользователе
     useEffect(() => {
         cookies.get('user') ? setUser(cookies.get('user')) : navigate("/signin");
     }, []);
 
+    // получение информации о пользователе
     useEffect(() => {
         if (user.login === undefined) { return }
         setUserInfo(user.info)
@@ -64,16 +74,19 @@ const Profile = () => {
         }).catch((error) => { console.log(error); })
     }, [user]);
 
+    // выход из аккаунта
     const logout = () => {
         cookies.remove('user');
         window.location.reload();
         navigate("/signin");
     }
 
+    // открытие диалога 
     const openFileDialog = () => {
         inputFile.current.click();
     }
 
+    // изменение аватара
     const handleSelectedPicture = (e) => {
         const file = e.target.files[0];
         if (!file.type.startsWith('image/')) { return }
@@ -91,6 +104,7 @@ const Profile = () => {
         }).catch((error) => { console.log(error); })
     }
 
+    // изменение информации о пользователе
     const handleEditInfo = () => {
         if (isEditingInfo) {
             setIsEditingInfo(false);
@@ -104,6 +118,7 @@ const Profile = () => {
         }
     }
 
+    // удаление избранного вопроса
     const handleDeleteFavorite = (e, favorite) => {
         ky.delete(`${backendUrl}/favorite/${favorite.id}`, { json: user }).json().then((data) => {
             console.log(data)
@@ -124,6 +139,7 @@ const Profile = () => {
     };
     const butStyle = { width: '200px', marginTop: '7px' }
 
+    // возвращаемый компонент
     return (
         <Container className='profile'>
             <Typography variant="h6" style={{ marginTop: '20px', marginBottom: '20px' }}>Профиль пользователя {user.name}</Typography>

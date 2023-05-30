@@ -13,6 +13,8 @@ import kotlin.streams.toList
 class Sdamgia : WebTaskParser {
 
     companion object {
+        //val PROXY = "https://proxy.scrapeops.io/v1/?api_key=4eceb291-1660-4500-986a-61d2a1b042d0&url="
+
         val SUBJECT_DOMAINS = listOf(
             "mathb-ege", "ege", "inf-ege", "rus-ege", "en-ege", "phys-ege",
             "chem-ege", "bio-ege", "geo-ege", "soc-ege", "lit-ege", "hist-ege",
@@ -22,6 +24,7 @@ class Sdamgia : WebTaskParser {
         val URLS = SUBJECT_DOMAINS.stream().map("https://%s.sdamgia.ru/search"::format).toList();
         val CONNECTIONS = URLS.map {
             Jsoup.connect(it)
+                .userAgent("Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)")
                 .data("cb", "1") // только в условии
                 .data("body", "3")
         }
@@ -48,7 +51,10 @@ class Sdamgia : WebTaskParser {
                 val doc: Document = try {
                     connection.data("search", query).get()
                 } catch (e: Exception) {
-                    throw RuntimeException("Отсутствует интернет!")
+                    println(e.localizedMessage)
+                    print("Возможно отсутствует досуп к интернету")
+                    continue
+                    //throw RuntimeException("Отсутствует интернет!")
                 }
 
                 val divTextWithNumEl = doc.select("div:contains(Всего)").first()

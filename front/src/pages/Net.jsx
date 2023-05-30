@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { Button, Grid, IconButton, Paper, TextField } from "@mui/material";
+import { Button, Paper, TextField } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import ky from "ky";
-import backendUrl from "../backendUrl";
-import { Star, StarBorder } from "@mui/icons-material";
+import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
+import backendUrl from "../backendUrl";
+import TaskPaper from "../components/TaskPaper";
 
 const Net = () => {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
@@ -118,16 +118,7 @@ const Net = () => {
                 {results.length > 0 &&
                     <>
                         {results.map(result => (
-                            <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={result.id}>
-                                <div style={{ width: "100%" }}>
-                                    <span style={{ color: "gray" }}>ID: {result.id}</span>
-                                    {user.login !== undefined &&
-                                        <div style={{ marginTop: "-30px", textAlign: "right" }}><IconButton onClick={(e) => { handleStarTask(e, result) }}>{result.starred === undefined ? <StarBorder /> : <Star />}</IconButton></div>}
-                                </div>
-                                <b>Предмет: </b> {result.subjectName}<br />
-                                <b>Вопрос:</b><br /><span className="dl">{result.question}</span><br />
-                                <b>Решение:<b /></b><br /><span className="dl">{result.answer}</span>
-                            </Paper>
+                            <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
                         ))}
                         <Button variant="text" onClick={searchNextPage}>Загрузить ещё</Button>
                     </>

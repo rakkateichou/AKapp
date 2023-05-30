@@ -7,12 +7,12 @@ import TaskPaper from "./TaskPaper";
 const TaskList = () => {
     // список задач
     const [tasks, setTasks] = useState([]);
-    const [numOfTasks, setNumOfTasks] = useState(0);
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     useEffect(() => {
         // загрузка задач с сервера
-        fetch(`${backendUrl}/local/all`).then(resp => resp.json())
-            .then((res) => setTasks(res))
+        //fetch(`${backendUrl}/local/all`).then(resp => resp.json())
+        //    .then((res) => setTasks(res))
+        setTasks([{id: 10, question: "aaa", answer: "vvv", rating: 10}])
     }, []);
 
     const handleDeleteTask= (e, task) => {
@@ -28,7 +28,7 @@ const TaskList = () => {
         Всего задач в БД - {tasks.length}
         <Paper elevation={3} style={paperStyle}>
             {tasks.map(task => (
-                <TaskPaper id={task.id} question={task.question} answer={task.answer} onDelete={(e) => {handleDeleteTask(e, task)}} />
+                <TaskPaper task={task} hasRating deletable onDelete={(e) => {handleDeleteTask(e, task)}} />
             ))}
         </Paper>
     </>);

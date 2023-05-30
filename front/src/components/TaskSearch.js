@@ -39,7 +39,7 @@ const TaskSearch = () => {
                 <>
                     <h2>Результаты поиска</h2>
                     {results.map(result => (
-                        <TaskPaper id={result.id} question={result.question} answer={result.answer} onDelete={(e) => {handleDeleteTask(e, result)}} />
+                        <TaskPaper task={result} hasRating deletable onDelete={(e) => {handleDeleteTask(e, result)}} />
                     ))}
                 </>
             }

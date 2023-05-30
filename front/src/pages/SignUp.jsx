@@ -5,31 +5,39 @@ import Cookies from 'universal-cookie';
 import { Container, TextField, Button } from "@mui/material";
 import backendUrl from "../backendUrl";
 
+// страница регистрации
 const SignUp = () => {
+    // состояние полей формы
     const [name, setName] = useState("");
     const [login, setLogin] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
+    // состояние ошибки регистрации
     const [badRegistration, setBadRegistration] = useState(false);
     
+    // состояние валидности email и пароля
     const [isEmailValid, setIsEmailValid] = useState(true);
     const [isPasswordValid, setIsPasswordValid] = useState(true);
 
+    // cookies
     const cookies = new Cookies();
     const navigate = useNavigate();
 
+    // проверка валидности email
     function isValidEmail(email) { // better to also make checks on backend 
         if (email === "") return true;
         return /\S+@\S+\.\S+/.test(email);
     }
 
+    // проверка валидности пароля
     function isValidPassword(password) {
         if (password === "") return true;
         // password must contain at least 8 characters, 2 digits, 1 uppercase letter, 1 lowercase letter
         return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z]).{8,}$/.test(password);
     }
 
+    // функция отправки формы
     const handleSubmit = (e) => {
         if (password !== passwordAgain) {
             alert("Пароли не совпадают");
@@ -54,14 +62,17 @@ const SignUp = () => {
         })
     }
 
+    // useEffect для проверки валидности email
     useEffect(() => {
         setIsEmailValid(isValidEmail(email))
     }, [email])
 
+    // useEffect для проверки валидности пароля
     useEffect(() => {
         setIsPasswordValid(isValidPassword(password))
     }, [password])
 
+    // возвращаемый компонент
     return (
         <>
             <h2>Регистрация</h2>

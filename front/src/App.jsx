@@ -19,6 +19,7 @@ function App() {
         backgroundRepeat: 'repeat',
         minHeight: '100vh'
       }}>
+      {/* BrowserRouter для определения страниц*/}
       <BrowserRouter>
         <Appbar cn="toolbar" appStyle={{backgroundColor: "#C0C0C0"}} />
         <Routes>

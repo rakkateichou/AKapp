@@ -8,11 +8,13 @@ import Button from '@mui/material/Button';
 import backendUrl from '../backendUrl';
 import ky from 'ky';
 
+// добавление задачи
 export default function AddTask() {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
 
+    // обработка нажатия кнопки
     const handleClick = (e) => {
         const task = { question, answer }
         ky.put(`${backendUrl}/local`, {json: task}).json().then((data) => {
@@ -23,6 +25,7 @@ export default function AddTask() {
         }).catch((error) => { console.log(error); })
     }
 
+    // элемент добавления задачи
     return (
         <>
             <h2>Добавить задачу</h2>

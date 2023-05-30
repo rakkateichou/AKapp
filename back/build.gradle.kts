@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    implementation("net.sourceforge.htmlunit:htmlunit:2.4")
+
     implementation("org.simplejavamail:simple-java-mail:8.1.0")
     implementation("com.mysql:mysql-connector-j:8.0.32")
     implementation("org.jsoup:jsoup:1.13.1")
