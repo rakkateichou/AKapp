@@ -6,6 +6,7 @@ import Cookies from "universal-cookie";
 import backendUrl from "../backendUrl";
 import TaskPaper from "../components/TaskPaper";
 
+// страница поиска задач
 const Net = () => {
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     // состояние строки поиска
@@ -14,19 +15,21 @@ const Net = () => {
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
     const [searching, setSearching] = useState(false);
+    const [searchingNewPage, setSearchingNewPage] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [searchingAllSubjects, setSearchingAllSubjects] = useState(true);
     const [subject, setSubject] = useState("");
 
-    const [updateHack, setUpdateHack] = useState(false); // i am tired really
-
+    // cookies
     const cookies = new Cookies();
     const [user, setUser] = useState({});
 
+    // получение информации о пользователе
     useEffect(() => {
         if (cookies.get('user')) setUser(cookies.get('user'));
     }, []);
 
+    // поиск задач
     const search = () => {
         var qt = query
         setPage(1)
@@ -41,14 +44,18 @@ const Net = () => {
                 setSearching(false);
             })
     }
+    // поиск следующей страницы
     const searchNextPage = () => {
+        setSearchingNewPage(true)
         setPage(page + 1)
-        ky.get(`${backendUrl}/int`, { searchParams: { query: query, page: page, subjects: subject }, timeout: 900000, retry: 3 }).json()
+        ky.get(`${backendUrl}/int`, { searchParams: { query: query, page: page, subjects: subject, userId: user.id }, timeout: 900000, retry: 3 }).json()
             .then((data) => {
                 console.log(data)
                 setResults(results.concat(data))
+                setSearchingNewPage(false)
             })
     }
+    // изменение предмета поиска
     const handleChange = (e) => {
         if (e.target.value === "") {
             setSearchingAllSubjects(true);
@@ -59,10 +66,9 @@ const Net = () => {
         setSubject(e.target.value)
     }
 
+    // добавление задачи в избранное
     const handleStarTask = (e, result) => {
         result.userId = user.id
-        result.starred = "yes"
-        setUpdateHack(!updateHack)
         ky.put(`${backendUrl}/favorite`, { json: { user: user, favorite: result } }).json().then((data) => {
             console.log(data)
         }).catch((error) => { console.log(error); })
@@ -71,7 +77,6 @@ const Net = () => {
     // элемент поиска
     return (
         <>
-            {updateHack && null}
             <h2>Поиск задач по вопросу</h2>
             <Paper elevation={3} style={paperStyle}>
                 <div>
@@ -118,9 +123,15 @@ const Net = () => {
                 {results.length > 0 &&
                     <>
                         {results.map(result => (
-                            <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
+                            // <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
+                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result.taskEntity)} />
                         ))}
                         <Button variant="text" onClick={searchNextPage}>Загрузить ещё</Button>
+                        {searchingNewPage &&
+                            <>
+                                <br/><CircularProgress style={{ marginTop: '50px' }} />
+                            </>
+                        }
                     </>
                 }
             </Paper>

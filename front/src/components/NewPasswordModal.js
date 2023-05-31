@@ -4,28 +4,33 @@ import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { TextField, Button, Modal, Box } from "@mui/material";
 
+// модальное окно смены пароля
 const NewPasswordModal = () => {
-
+    // состояние полей
     var cookies = new Cookies();
     const [oldPassword, setOldPassword] = useState();
     const [newPassword, setNewPassword] = useState();
     const [newPasswordAgain, setNewPasswordAgain] = useState();
-
+    // проверка валидности пароля
     const [isPasswordValid, setIsPasswordValid] = useState(true);
 
+    // проверка валидности пароля
     function isValidPassword(password) {
         // password must contain at least 8 characters, 2 digits, 1 uppercase letter, 1 lowercase letter
         return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z]).{8,}$/.test(password);
     }
 
+    // состояние модального окна
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
         setOpen(true);
     };
+    // закрытие модального окна
     const handleClose = () => {
         setOpen(false);
     };
 
+    // изменение пароля
     const changePassword = () => {
         if (newPassword !== newPasswordAgain) {
             alert("Пароли не совпадают");
@@ -45,6 +50,7 @@ const NewPasswordModal = () => {
         handleClose()
     }
 
+    // useEffect для проверки валидности пароля
     useEffect(() => {
         setIsPasswordValid(isValidPassword(newPassword))
     }, [newPassword])

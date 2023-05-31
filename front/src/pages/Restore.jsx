@@ -4,24 +4,31 @@ import { TextField, Button, Container } from "@mui/material";
 import backendUrl from "../backendUrl";
 import ky from "ky";
 
+// восстановаление пароля
 const Restore = () => {
     // const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    // навигация
     const navigate = useNavigate();
 
+    // состояние полей формы
     const [login, setLogin] = useState("");
     const [code, setCode] = useState("")
 
+    // состояние отправки кода подтверждения
     const [codeSent, setCodeSent] = useState(false);
 
+    // состояние нового пароля
     const [newPass, setNewPass] = useState("");
 
+    // отправка кода подтверждения
     const handleSendCode = (e) => {
         e.preventDefault();
         ky.post(`${backendUrl}/user/restore/code`, { body: login }).json()
         setCodeSent(true);
     }
 
+    // отправка нового пароля
     const handleSubmitNewPass = (e) => {
         e.preventDefault();
         ky.post(`${backendUrl}/user/restore`, { json: { login: login, code: code, password: newPass } }).json().then((data) => {
@@ -33,6 +40,7 @@ const Restore = () => {
         })
     }
 
+    // возвращаемый компонент
     return (
         <Container style={{ maxWidth: "500px" }}>
             <h3>Восстановление пароля</h3>

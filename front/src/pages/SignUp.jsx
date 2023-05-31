@@ -1,6 +1,6 @@
 import ky from "ky";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { Container, TextField, Button } from "@mui/material";
 import backendUrl from "../backendUrl";
@@ -130,7 +130,7 @@ const SignUp = () => {
                     </Button>
                 </form>
                 <br />
-                <a href="/signin">Уже есть аккаунт?</a>
+                <Link to="/signin">Уже есть аккаунт?</Link>
             </Container>
             <br />
             {badRegistration && <h5>Такой пользователь уже существует</h5>}

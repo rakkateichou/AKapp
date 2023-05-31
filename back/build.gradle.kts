@@ -24,7 +24,8 @@ repositories {
 }
 
 dependencies {
-    implementation("net.sourceforge.htmlunit:htmlunit:2.4")
+//    implementation("net.sourceforge.htmlunit:htmlunit:2.4")
+    implementation("org.seleniumhq.selenium:selenium-java:2.41.0")
 
     implementation("org.simplejavamail:simple-java-mail:8.1.0")
     implementation("com.mysql:mysql-connector-j:8.0.32")
@@ -32,6 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
+//    implementation("io.ktor:ktor-server-sessions-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")

@@ -11,6 +11,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.system.exitProcess
 
 class LocalTaskDataSource(database: Database) : TaskDatabase {
+    companion object {
+        const val LOCAL_TASK_ID_PREFIX = -1000000
+    }
     object Tasks : Table() {
         val id = integer("id").autoIncrement().uniqueIndex()
         val question = text("question")
@@ -27,10 +30,9 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
                     if (rs.next()) neededToBeFilled = false
                 }
             } catch (e: Exception) {
-                println("Попытка подключения провалилась. Сервер MYSQL ещё не запущен")
-                exitProcess(-5)
+                throw RuntimeException("Попытка подключения провалилась. Сервер MYSQL ещё не запущен")
             }
-            SchemaUtils.create(Tasks)
+            SchemaUtils.createMissingTablesAndColumns(Tasks)
             if (neededToBeFilled) {
                 listOfTasks().forEach { task ->
                     Tasks.insert {
@@ -48,10 +50,11 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
             it[question] = taskEntity.question
             it[answer] = taskEntity.answer
             it[subjectName] = taskEntity.subjectName
-        }[Tasks.id]
+        }[Tasks.id] + LOCAL_TASK_ID_PREFIX
     }
 
     override suspend fun removeTask(id: Int): Boolean = transaction {
+        val id = id - LOCAL_TASK_ID_PREFIX
         Tasks.deleteWhere { Tasks.id eq id } > 0
     }
 
@@ -66,16 +69,32 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
 //                    or (Tasks.answer like "%$query%"))
 //                    and (Tasks.subjectName inList subjects))
 //        }.limit(20, ((page - 1) * 20).toLong()).mapToTasks()
-
-        Tasks.select {
-            ((Tasks.question like "%$query%")
-                    or (Tasks.answer like "%$query%"))
-        }.mapToTasks()
+        // if query is empty then return all tasks
+//        if (query.isEmpty()) {
+//            Tasks.select {
+//                (Tasks.subjectName inList subjects)
+//            }.limit(20, ((page - 1) * 20).toLong()).mapToTasks()
+//        } else {
+//            Tasks.select {
+//                (((Tasks.question like "%$query%")
+//                        or (Tasks.answer like "%$query%"))
+//                        and (Tasks.subjectName inList subjects))
+//            }.limit(20, ((page - 1) * 20).toLong()).mapToTasks()
+//        }
+        if (query.isEmpty()) {
+            Tasks.selectAll().mapToTasks()
+        }
+        else {
+            Tasks.select {
+                ((Tasks.question like "%$query%")
+                        or (Tasks.answer like "%$query%"))
+            }.mapToTasks()
+        }
     }
 
     private fun Query.mapToTasks() = this.map {
         TaskEntity(
-            it[Tasks.id],
+            it[Tasks.id] + LOCAL_TASK_ID_PREFIX,
             it[Tasks.question],
             it[Tasks.answer],
             it[Tasks.subjectName]

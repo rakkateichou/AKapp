@@ -4,11 +4,8 @@ import com.diploma.data.task.TaskEntity
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicLong
 import java.util.regex.Pattern
 import kotlin.math.ceil
-import kotlin.streams.toList
 
 class Sdamgia : WebTaskParser {
 
@@ -21,10 +18,10 @@ class Sdamgia : WebTaskParser {
             "de-ege", "fr-ege"
         )
 
-        val URLS = SUBJECT_DOMAINS.stream().map("https://%s.sdamgia.ru/search"::format).toList();
+        val URLS = SUBJECT_DOMAINS.map { "https://$it.sdamgia.ru/search" }
         val CONNECTIONS = URLS.map {
             Jsoup.connect(it)
-                .userAgent("Mozilla/5.0 (compatible; YandexMetrika/2.0; +http://yandex.com/bots yabs01)")
+                .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.4567.89 Safari/537.36")
                 .data("cb", "1") // только в условии
                 .data("body", "3")
         }
@@ -53,8 +50,7 @@ class Sdamgia : WebTaskParser {
                 } catch (e: Exception) {
                     println(e.localizedMessage)
                     print("Возможно отсутствует досуп к интернету")
-                    continue
-                    //throw RuntimeException("Отсутствует интернет!")
+                    throw RuntimeException("Попытка обратиться к fallback движку")
                 }
 
                 val divTextWithNumEl = doc.select("div:contains(Всего)").first()
@@ -69,23 +65,27 @@ class Sdamgia : WebTaskParser {
         }
 
         val results = arrayListOf<TaskEntity>()
-        val id = AtomicInteger()
-        for (subject in subjects){
+        for (subject in subjects) {
             val url = URLS[SUBJECT_NAMES.indexOf(subject)]
-            val doc: Document = try{
+            val doc: Document = try {
                 Jsoup.connect(url)
                     .data("search", query)
                     .data("cb", "1") // только в условии
                     .data("body", "3")
                     .data("page", "$page")
                     .get()
-                } catch (e: Exception) {
-                    print(e.message)
-                    return Collections.emptyList();
-                }
+            } catch (e: Exception) {
+                print(e.message)
+                return Collections.emptyList();
+            }
 
             val tasksOnThisPage = doc.select("div[class=prob_maindiv]")
             for (task in tasksOnThisPage) {
+                var id = 0
+                for (iElement in task.select("span[class=prob_nums]").select("a")) {
+                    id = iElement.text()?.toInt() ?: 0
+                }
+
                 val questionBuilder = StringBuilder()
                 for (qElement in task.select("div[class=pbody]").select("p")) {
                     questionBuilder.append(stringFromHtml(qElement.outerHtml())).append("\n");
@@ -95,13 +95,12 @@ class Sdamgia : WebTaskParser {
                 val question = questionBuilderStr.replace("&nbsp;", " ");
 
                 val answerBuilder = StringBuilder()
-                for ( aElement in task.select("div[class=solution]").select("p")) {
+                for (aElement in task.select("div[class=solution]").select("p")) {
                     answerBuilder.append(stringFromHtml(aElement.outerHtml())).append("\n");
                 }
                 val answer = answerBuilder.toString().trim().replace("&nbsp;", " ").replace("\n\n", "\n");
 
-                results.add(TaskEntity(id.get(), question, answer, subject));
-                id.getAndIncrement();
+                results.add(TaskEntity(id, question, answer, subject));
             }
         }
         return results.toList()

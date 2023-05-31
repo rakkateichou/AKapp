@@ -35,7 +35,7 @@ services:
     expose:
       - '3306'
     volumes:
-      - sql_data:/var/sql_data
+      - sql_data_v0.1:/var/sql_data
     environment:
       - MYSQL_DATABASE=taskdb
       - MYSQL_ROOT_PASSWORD=1234
@@ -49,5 +49,5 @@ services:
     command: sh -c "sleep 3 && echo -e '============== Сервер SOTVETIS запущен! Ссылка - http://localhost:80 =============='"
 
 volumes:
-  sql_data:
+  sql_data_v0.1:
   users:

@@ -4,6 +4,7 @@ import Appbar from "../components/Appbar";
 
 const Main = () => {
 
+  // useEffect для загрузки скрипта telegramim_button
   useEffect(() => {
     const script = document.createElement('script');
 
@@ -18,6 +19,7 @@ const Main = () => {
     }
   }, []);
 
+  // возвращаемый компонент
   return (
     <div className="mainPage" style={{}}>
       <style>{`

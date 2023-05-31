@@ -3,29 +3,36 @@ import NewPasswordModal from "./NewPasswordModal";
 import { useEffect, useState } from "react";
 
 const ProfileModalContent = (props) => {
+    // пользователь
     const user = props.user
     const onSave = props.onSave
 
+    // проверка валидности email
     const [isEmailValid, setIsEmailValid] = useState(true);
 
+    // проверка валидности email
     function isValidEmail(email) {
         return /\S+@\S+\.\S+/.test(email);
     }
 
+    // состояние полей
     const [name, setName] = useState(user.name);
     const [login, setLogin] = useState(user.login);
     const [email, setEmail] = useState(user.email);
 
+    // useEffect для изменения полей пользователя
     useEffect(() => {
         user.name = name;
         user.login = login;
         user.email = email;
     }, [name, login, email])
 
+    // useEffect для проверки валидности email
     useEffect(() => {
         setIsEmailValid(isValidEmail(email))
     }, [email])
 
+    // элемент профиля
     return (
         <>
             <TextField

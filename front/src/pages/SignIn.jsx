@@ -6,6 +6,7 @@ import { Link, redirect, useNavigate } from "react-router-dom";
 import { Container, TextField, Button } from "@mui/material";
 import backendUrl from "../backendUrl";
 
+// страница авторизации
 const SignIn = () => {
     const [status, setStatus] = useState(false);
     const [badLogin, setBadLogin] = useState(false);
@@ -14,6 +15,7 @@ const SignIn = () => {
     const cookies = new Cookies();
     const navigate = useNavigate();
 
+    // функция отправки формы
     const handleSubmit = (event) => {
         redirect("/")
         event.preventDefault();
@@ -32,6 +34,7 @@ const SignIn = () => {
         // redirect("/profile")
     }
 
+    // возвращаемый компонент
     return (
         <>
             <h2>Авторизация</h2>

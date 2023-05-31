@@ -3,9 +3,11 @@ package com.diploma.plugins
 import com.diploma.data.SecureFavorite
 import com.diploma.data.favorite.datasource.local.LocalFavoriteDataSource
 import com.diploma.data.task.TaskEntity
+import com.diploma.data.task.TaskResponse
 import com.diploma.data.task.datasource.local.LocalTaskDataSource
 import com.diploma.data.task.datasource.web.WebTaskDataSource
 import com.diploma.data.task.datasource.web.parsers.Sdamgia
+import com.diploma.data.task.datasource.web.parsers.SdamgiaSelenium
 import com.diploma.data.user.User
 import com.diploma.data.user.UserCreds
 import com.diploma.data.user.UserKnownNewPass
@@ -19,12 +21,13 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 
 fun Application.configureRouting(database: Database) {
     val webSourceList = arrayOf(
-        Sdamgia(),
+        Pair(Sdamgia(), SdamgiaSelenium())
 //        Mailru(),
 //        Znanija()
     )
@@ -36,15 +39,18 @@ fun Application.configureRouting(database: Database) {
 
     routing {
         get("/local") {
-            val query = call.request.queryParameters["query"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val query = call.request.queryParameters["query"] ?: ""
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
             val subjects = call.request.queryParameters.getAll("subjects")?: listOf()
+            val userId = call.request.queryParameters["userId"]?.toLong() ?: -1 // todo not safe
             val tasks = localSource.searchTasks(query, page, subjects)
-            call.respond(HttpStatusCode.OK, tasks)
-        }
-        get("/local/all") {
-            val tasks = localSource.getAllTasks()
-            call.respond(HttpStatusCode.OK, tasks)
+            val response = tasks.map { task ->
+                if (userId == -1L) return@map TaskResponse(task, false, 0)
+                val isFavorite = favoriteSource.isFavorite(userId, task.id)
+                val favoriteCount = favoriteSource.getNumOfFavoritesForTask(task.id)
+                TaskResponse(task, isFavorite, favoriteCount)
+            }
+            call.respond(HttpStatusCode.OK, response)
         }
         put("/local") {
             val task = call.receive<TaskEntity>()
@@ -64,10 +70,17 @@ fun Application.configureRouting(database: Database) {
             println(query)
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
             var subjects = call.request.queryParameters.getAll("subjects")?: listOf()
+            val userId = call.request.queryParameters["userId"]?.toLong() ?: -1
             subjects = subjects.filter { it != "" }
             print(subjects)
             val tasks = webSource.searchTasks(query, page, subjects)
-            call.respond(HttpStatusCode.OK, tasks)
+            val response = tasks.map { task ->
+                if (userId == -1L) return@map TaskResponse(task, false, 0)
+                val isFavorite = favoriteSource.isFavorite(userId, task.id)
+                val favoriteCount = favoriteSource.getNumOfFavoritesForTask(task.id)
+                TaskResponse(task, isFavorite, favoriteCount)
+            }
+            call.respond(HttpStatusCode.OK, response)
         }
 
         put("/user") {

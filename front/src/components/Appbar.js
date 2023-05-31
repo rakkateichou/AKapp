@@ -9,10 +9,13 @@ import { useEffect, useState } from 'react';
 
 // заголовок страницы
 export default function Appbar(props) {
+  // состояние строки
   const cn = props.cn
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cookies = new Cookies();
+  
+  // useEffect для проверки авторизации
   useEffect(() => {
     if (cookies.get('user')) {
       setIsLoggedIn(true);
@@ -22,6 +25,7 @@ export default function Appbar(props) {
     }
   }, []);
 
+  // элемент строки
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={props.appStyle} elevation={props.elevation}>
