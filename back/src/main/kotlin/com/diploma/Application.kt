@@ -8,8 +8,10 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.sessions.*
 import kotlinx.serialization.json.Json
 
+// точка входа в приложение
 fun main(args: Array<String>) = EngineMain.main(args)
 
+// функция для настройки приложения
 @Suppress("unused")
 fun Application.module() {
     configureHTTP()

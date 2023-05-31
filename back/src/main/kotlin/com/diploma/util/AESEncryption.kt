@@ -7,11 +7,13 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
+// класс для шифрования и дешифрования данных
 object AESEncryption {
 
     const val secretKey = "aGloaWhp"
     const val salt = "QWlGNHNhMTJTQWZ2bGhpV3U="
 
+    // шифрование
     fun encrypt(strToEncrypt: String) :  String?
     {
         try
@@ -32,6 +34,7 @@ object AESEncryption {
         return null
     }
 
+    // дешифрование
     fun decrypt(strToDecrypt : String) : String? {
         try
         {

@@ -12,13 +12,16 @@ class Sdamgia : WebTaskParser {
     companion object {
         //val PROXY = "https://proxy.scrapeops.io/v1/?api_key=4eceb291-1660-4500-986a-61d2a1b042d0&url="
 
+        // список доменов для поиска
         val SUBJECT_DOMAINS = listOf(
             "mathb-ege", "ege", "inf-ege", "rus-ege", "en-ege", "phys-ege",
             "chem-ege", "bio-ege", "geo-ege", "soc-ege", "lit-ege", "hist-ege",
             "de-ege", "fr-ege"
         )
 
+        // список url для поиска
         val URLS = SUBJECT_DOMAINS.map { "https://$it.sdamgia.ru/search" }
+        // список соединений
         val CONNECTIONS = URLS.map {
             Jsoup.connect(it)
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.4567.89 Safari/537.36")
@@ -26,6 +29,7 @@ class Sdamgia : WebTaskParser {
                 .data("body", "3")
         }
 
+        // список названий предметов
         val SUBJECT_NAMES = listOf(
             "Математика базового уровня", "Математика профильного уровня",
             "Информатика", "Русский язык",
@@ -40,7 +44,9 @@ class Sdamgia : WebTaskParser {
     val pageSize: Int = 20
     val numPattern = Pattern.compile("\\d+")
 
+    // получение список предметов
     override fun getSubjectList(): List<String> = SUBJECT_NAMES
+    // поиск задач
     override suspend fun searchTasks(query: String, page: Int, subjects: List<String>): List<TaskEntity> {
         val subjects = subjects.toMutableList()
         if (subjects.isEmpty()) {

@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.system.exitProcess
 
+// имплементация интерфейса TaskDataSource для работы с локальной базой данных задач
 class LocalTaskDataSource(database: Database) : TaskDatabase {
     companion object {
         const val LOCAL_TASK_ID_PREFIX = -1000000
@@ -22,8 +23,10 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         override val primaryKey = PrimaryKey(id)
     }
 
+    // инициализация таблицы задач
     init {
         transaction(database) {
+            // проверка, нужно ли заполнять таблицу задач
             var neededToBeFilled = true
             try {
                 exec("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME = 'Tasks'") { rs ->
@@ -32,7 +35,9 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
             } catch (e: Exception) {
                 throw RuntimeException("Попытка подключения провалилась. Сервер MYSQL ещё не запущен")
             }
+            // создание таблицы задач
             SchemaUtils.createMissingTablesAndColumns(Tasks)
+            // заполнение таблицы задач
             if (neededToBeFilled) {
                 listOfTasks().forEach { task ->
                     Tasks.insert {
@@ -45,6 +50,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         }
     }
 
+    // сохранение задачи в таблицу задач
     override suspend fun saveTask(taskEntity: TaskEntity): Int = transaction {
         Tasks.insert {
             it[question] = taskEntity.question
@@ -53,15 +59,13 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         }[Tasks.id] + LOCAL_TASK_ID_PREFIX
     }
 
+    // удаление задачи из таблицы задач по id
     override suspend fun removeTask(id: Int): Boolean = transaction {
         val id = id - LOCAL_TASK_ID_PREFIX
         Tasks.deleteWhere { Tasks.id eq id } > 0
     }
 
-    override suspend fun getAllTasks(): List<TaskEntity> = transaction {
-        Tasks.selectAll().mapToTasks()
-    }
-
+    // поиск задач по запросу, странице и предметам
     override suspend fun searchTasks(query: String, page: Int, subjects: List<String>): List<TaskEntity> = transaction {
         // fetch next 20 tasks in tasks for passed subjects
 //        Tasks.select {
@@ -92,6 +96,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         }
     }
 
+    // конвертация запроса в список задач
     private fun Query.mapToTasks() = this.map {
         TaskEntity(
             it[Tasks.id] + LOCAL_TASK_ID_PREFIX,

@@ -7,6 +7,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import org.jetbrains.exposed.sql.Database
 
+// функция для настройки аутентификации
 fun Application.configureAuthentication(database: Database) {
     install(Authentication) {
         form("auth") {

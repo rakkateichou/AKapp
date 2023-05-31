@@ -1,5 +1,6 @@
 package com.diploma.data.favorite
 
+// дата класс для избранного
 @kotlinx.serialization.Serializable
 data class FavoriteEntity(
     val id: Int,

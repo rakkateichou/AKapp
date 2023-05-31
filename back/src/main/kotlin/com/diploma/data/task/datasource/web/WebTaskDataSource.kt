@@ -6,6 +6,7 @@ import com.diploma.data.task.datasource.web.parsers.WebTaskParser
 
 class WebTaskDataSource(private vararg val parsers: Pair<WebTaskParser, WebTaskParser>) : TaskDataSource{
 
+    // получение списка предметов
     override suspend fun searchTasks(query: String, page: Int, subjects: List<String>): List<TaskEntity> {
         val result = arrayListOf<TaskEntity>()
         for (parser in parsers) {

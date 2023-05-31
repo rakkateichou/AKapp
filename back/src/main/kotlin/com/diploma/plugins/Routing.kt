@@ -25,19 +25,23 @@ import io.ktor.server.sessions.*
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 
+// функция для настройки роутинга
 fun Application.configureRouting(database: Database) {
+    // список источников данных
     val webSourceList = arrayOf(
         Pair(Sdamgia(), SdamgiaSelenium())
 //        Mailru(),
 //        Znanija()
     )
 
+    // источники данных
     val localSource = LocalTaskDataSource(database)
     val webSource = WebTaskDataSource(*webSourceList)
     val userSource = LocalUserDataSource(database)
     val favoriteSource = LocalFavoriteDataSource(database)
 
     routing {
+        // получение списка заданий из локальной базы данных
         get("/local") {
             val query = call.request.queryParameters["query"] ?: ""
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
@@ -52,12 +56,14 @@ fun Application.configureRouting(database: Database) {
             }
             call.respond(HttpStatusCode.OK, response)
         }
+        // запись задания в локальную базу данных
         put("/local") {
             val task = call.receive<TaskEntity>()
             print(task)
             localSource.saveTask(task)
             call.respond(HttpStatusCode.Created)
         }
+        // удаление задания из локальной базы данных
         delete("/local/{id}") {
             val id = call.parameters["id"]?.toInt()
                 ?: return@delete call.respond(HttpStatusCode.BadRequest, "Invalid ID")
@@ -65,6 +71,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK)
         }
 
+        // получение списка заданий из внешнего источника
         get("/int") {
             val query = call.request.queryParameters["query"] ?: return@get call.respond(HttpStatusCode.BadRequest)
             println(query)
@@ -83,6 +90,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK, response)
         }
 
+        // регистрация пользователя
         put("/user") {
             val user = call.receive<User>()
             println(user)
@@ -94,6 +102,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK, registeredUser)
         }
 
+        // новый пароль пользователя
         put("/user/{login}/new-pass") {
             val login = call.parameters["login"] ?: return@put call.respond(HttpStatusCode.BadRequest)
             val unp = call.receive<UserKnownNewPass>()
@@ -105,10 +114,12 @@ fun Application.configureRouting(database: Database) {
             }
         }
 
+        // статические файлы
         static("/users") {
             staticRootFolder = File(System.getProperty("user.dir"))
             files("users")
         }
+        // аватар пользователя
         put("/user/{login}/avatar") {
             val login = call.parameters["login"] ?: return@put call.respond(HttpStatusCode.BadRequest)
             // получение файла
@@ -134,6 +145,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK)
         }
 
+        // обновление данных пользователя
         put("/user/{login}/update") {
             val login = call.parameters["login"] ?: return@put call.respond(HttpStatusCode.BadRequest)
             val user = call.receive<User>()
@@ -144,6 +156,7 @@ fun Application.configureRouting(database: Database) {
                 call.respond(HttpStatusCode.BadRequest, "Неверный логин")
         }
 
+        // получение данных пользователя
         post("/user/{login}/data") {
             val login = call.parameters["login"] ?: return@post call.respond(HttpStatusCode.BadRequest)
             val password = call.receive<String>()
@@ -156,6 +169,7 @@ fun Application.configureRouting(database: Database) {
             }
         }
 
+        // вход пользователя
         post("/user") {
             val creds = call.receive<UserCreds>();
             val user = userSource.login(creds.login, creds.password)
@@ -166,12 +180,14 @@ fun Application.configureRouting(database: Database) {
             }
         }
 
+        // генерация кода для восстановления пароля
         post("/user/restore/code") {
             val login = call.receive<String>()
             userSource.generateRestoreCode(login)
             call.respond(HttpStatusCode.OK)
         }
 
+        // восстановление пароля
         post("/user/restore") {
             val data = call.receive<UserRestorePass>()
             val isOk = userSource.restorePassword(data.login, data.code, data.password)
@@ -182,6 +198,7 @@ fun Application.configureRouting(database: Database) {
             }
         }
 
+        // добавление задачи в избранное
         put("/favorite") {
             val fav = call.receive<SecureFavorite>()
             val isUserOk = userSource.isUserOk(fav.user)
@@ -193,6 +210,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK)
         }
 
+        // получение избранных задач
         post("/favorites") {
             val user = call.receive<User>()
             val isUserOk = userSource.isUserOk(user)
@@ -204,6 +222,7 @@ fun Application.configureRouting(database: Database) {
             call.respond(HttpStatusCode.OK, favorites)
         }
 
+        // удаление задачи из избранного
         delete("/favorite/{id}") {
             val user = call.receive<User>()
             val isUserOk = userSource.isUserOk(user)

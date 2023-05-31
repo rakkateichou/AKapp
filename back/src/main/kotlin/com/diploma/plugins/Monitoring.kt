@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.event.Level
 
+// функция для настройки мониторинга
 fun Application.configureMonitoring(database: Database) {
     if (!isDev()) return
     transaction(database) { addLogger(StdOutSqlLogger) }

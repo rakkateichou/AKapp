@@ -11,7 +11,7 @@ import org.simplejavamail.api.mailer.Mailer
 import org.simplejavamail.email.EmailBuilder
 import org.simplejavamail.mailer.MailerBuilder
 
-
+// имплементация интерфейса UserDataSource для работы с локальной базой данных пользователей
 class LocalUserDataSource(database: Database) : UserDataSource {
     object Users : Table() {
         val id = long("id").autoIncrement()
@@ -24,6 +24,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         override val primaryKey = PrimaryKey(id)
     }
 
+    // объект для отправки писем
     var mailerBuilder = MailerBuilder
         .withSMTPServer("smtp.yandex.ru", 465, "sotvetis.project", "bddbyuawimtnzfpz")//""wokktvxkaqxkvpty") //"XK_Z4\"#Tf!TL^cm"
         .withDebugLogging(isDev())
@@ -34,6 +35,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         .withProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
     var mailer: Mailer
 
+    // инициализация таблицы пользователей
     init {
         transaction(database) {
             SchemaUtils.create(Users)
@@ -41,6 +43,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         mailer = mailerBuilder.buildMailer()
     }
 
+    // регистрация пользователя
     override suspend fun register(user: User): User? = transaction {
         val idOfEx = Users.select { Users.login eq user.login }.firstOrNull()?.get(Users.id) ?: -1
         if (idOfEx != -1L) return@transaction null
@@ -63,6 +66,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         )
     }
 
+    // вход пользователя
     override suspend fun login(login: String, password: String): User? = transaction {
         val encryptedPassword = AESEncryption.encrypt(password) ?: return@transaction null
         val transaction =
@@ -79,6 +83,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         else null
     }
 
+    // смена пароля
     override suspend fun changePassword(login: String, oldPassword: String, newPassword: String): Boolean =
         transaction {
             val encryptedOldPassword = AESEncryption.encrypt(oldPassword) ?: return@transaction false
@@ -93,6 +98,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
             } else false
         }
 
+    // генерация кода для восстановления пароля
     override suspend fun generateRestoreCode(login: String) = transaction {
         // get user email
         val email = Users.select { Users.login eq login }.firstOrNull()?.get(Users.email) ?: return@transaction
@@ -114,6 +120,7 @@ class LocalUserDataSource(database: Database) : UserDataSource {
 
     }
 
+    // восстановление пароля
     override suspend fun restorePassword(login: String, code: String, password: String): Boolean = transaction {
         if (code.length != 6) return@transaction false
         // check if code is correct
@@ -132,11 +139,13 @@ class LocalUserDataSource(database: Database) : UserDataSource {
         } else false
     }
 
+    // проверка пользователя
     override suspend fun isUserOk(user: User): Boolean = transaction {
         val transaction = Users.select { (Users.id eq user.id) and (Users.login eq user.login) and (Users.password eq user.password) }.firstOrNull()
         return@transaction transaction != null
     }
 
+    // обновление информации о пользователе
     override suspend fun updateUser(user: User): Boolean = transaction {
         // update user info
         val update =
