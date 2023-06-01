@@ -15,6 +15,7 @@ const Local = () => {
     // получение информации о пользователе
     useEffect(() => {
         if (cookies.get('user')) setUser(cookies.get('user'));
+        else setUser({});
     }, []);
 
     // добавление задачи в избранное

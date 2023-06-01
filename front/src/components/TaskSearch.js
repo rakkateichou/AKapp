@@ -16,6 +16,7 @@ const TaskSearch = (props) => {
             setResults([])
             return
         }
+        if (props.user.id === undefined) props.user.id = -1;
         // получение результатов поиска
         fetch(`${backendUrl}/local?query=` + query + "&userId=" + props.user.id)
             .then((resp) => resp.json())
@@ -27,7 +28,7 @@ const TaskSearch = (props) => {
         ky.delete(`${backendUrl}/local/${task.id}`).json().then((data) => {
             console.log(data);
         }).catch((error) => { console.log(error); })
-        setResults(results.filter(item => item.id !== task.id))
+        setResults(results.filter(item => item.taskEntity.id !== task.id))
     }
 
 
@@ -42,7 +43,7 @@ const TaskSearch = (props) => {
                         <h2>Результаты поиска</h2>
                         {/* результаты поиска */}
                         {results.map(result => (
-                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={props.user.login !== undefined} deletable onDelete={(e) => { handleDeleteTask(e, result.taskEntity) }} handleStarTask={(e) => { props.handleStarTask(e, result.taskEntity) }} />
+                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={props.user.login !== undefined} deletable onDelete={(e) => { handleDeleteTask(e, result.taskEntity) }} handleStarTask={(e) => { if (!result.isFavorite) props.handleStarTask(e, result.taskEntity) }} />
                         ))}
                     </>
                 }

@@ -46,7 +46,7 @@ fun Application.configureRouting(database: Database) {
             val query = call.request.queryParameters["query"] ?: ""
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
             val subjects = call.request.queryParameters.getAll("subjects")?: listOf()
-            val userId = call.request.queryParameters["userId"]?.toLong() ?: -1 // todo not safe
+            val userId = try { call.request.queryParameters["userId"]?.toLong() ?: -1 } catch (e: NumberFormatException) { -1 } // todo not safe
             val tasks = localSource.searchTasks(query, page, subjects)
             val response = tasks.map { task ->
                 if (userId == -1L) return@map TaskResponse(task, false, 0)
@@ -77,7 +77,7 @@ fun Application.configureRouting(database: Database) {
             println(query)
             val page = call.request.queryParameters["page"]?.toInt() ?: 1
             var subjects = call.request.queryParameters.getAll("subjects")?: listOf()
-            val userId = call.request.queryParameters["userId"]?.toLong() ?: -1
+            val userId = try { call.request.queryParameters["userId"]?.toLong() ?: -1 } catch (e: NumberFormatException) { -1 } // todo not safe
             subjects = subjects.filter { it != "" }
             print(subjects)
             val tasks = webSource.searchTasks(query, page, subjects)

@@ -36,7 +36,7 @@ const Net = () => {
         setSearching(true)
         setNotFound(false)
         // получение результатов поиска
-        ky.get(`${backendUrl}/int`, { searchParams: { query: qt, page: page, subjects: subject }, timeout: 900000, retry: 3 }).json()
+        ky.get(`${backendUrl}/int`, { searchParams: { query: qt, page: page, subjects: subject, userId: user.id }, timeout: 900000, retry: 3 }).json()
             .then((data) => {
                 if (data.length === 0) setNotFound(true)
                 console.log(data);
@@ -124,7 +124,7 @@ const Net = () => {
                     <>
                         {results.map(result => (
                             // <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
-                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result.taskEntity)} />
+                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} handleStarTask={(e) => {if (!result.isFavorite) handleStarTask(e, result.taskEntity)}} />
                         ))}
                         <Button variant="text" onClick={searchNextPage}>Загрузить ещё</Button>
                         {searchingNewPage &&
