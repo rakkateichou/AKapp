@@ -2,6 +2,8 @@ package com.diploma.data.favorite.datasource.local
 
 import com.diploma.data.favorite.FavoriteEntity
 import com.diploma.data.favorite.datasource.FavoriteDataSource
+import com.diploma.data.favorite.datasource.local.LocalFavoriteDataSource.Favorites.taskId
+import com.diploma.data.favorite.datasource.local.LocalFavoriteDataSource.Favorites.userId
 import com.diploma.data.task.datasource.local.LocalTaskDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -39,6 +41,8 @@ class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
 
     // добавление задачи в список избранных
     override suspend fun addFavorite(favorite: FavoriteEntity): Unit = transaction {
+        val check = Favorites.select{(Favorites.userId eq userId) and (Favorites.taskId eq taskId)}.count() > 0
+        if (check) return@transaction
         Favorites.insert {
             it[this.taskId] = favorite.id
             it[this.userId] = favorite.userId
