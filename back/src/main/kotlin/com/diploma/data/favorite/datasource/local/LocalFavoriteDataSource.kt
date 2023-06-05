@@ -15,7 +15,7 @@ class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
         val userId = long("user_id")
         val question = text("question")
         val answer = text("answer")
-        override val primaryKey = PrimaryKey(LocalTaskDataSource.Tasks.id)
+        override val primaryKey = PrimaryKey(id)
     }
 
     // инициализация таблицы избранных задач
