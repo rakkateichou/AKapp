@@ -2,7 +2,7 @@ version: '3.9'
 services:
   backend:
     restart: always
-    image: ezow0rm/sotvetis-backend:latest
+    image: rakkateichou/sotvetis-backend:latest
     ports:
       - '8080:8080'
     volumes:
@@ -13,7 +13,7 @@ services:
       - check-db-started
 
   frontend:
-    image: ezow0rm/sotvetis-frontend:latest
+    image: rakkateichou/sotvetis-frontend:latest
     ports:
       - '80:80'
     depends_on:
