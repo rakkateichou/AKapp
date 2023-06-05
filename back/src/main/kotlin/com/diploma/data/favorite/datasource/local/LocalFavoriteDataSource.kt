@@ -42,6 +42,8 @@ class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
     // добавление задачи в список избранных
     override suspend fun addFavorite(favorite: FavoriteEntity): Unit = transaction {
         val check = Favorites.select{(Favorites.userId eq favorite.userId) and (Favorites.taskId eq favorite.id)}.count() > 0
+        print(check)
+        print(favorite)
         if (check) return@transaction
         Favorites.insert {
             it[this.taskId] = favorite.id
