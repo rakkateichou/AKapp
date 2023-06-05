@@ -19,7 +19,7 @@ const TaskPaper = (props) => {
                         {/* если доступен рейтинг */}
                         {props.hasRating &&
                             <span style={{ marginRight: '10px' }}>
-                                <IconButton onClick={(e) => { props.handleStarTask(e); setStarred(true) }}>{(sr.isFavorite || starred) ? <Star /> : <StarBorder />}
+                                <IconButton onClick={(e) => { if (!starred) {props.handleStarTask(e) } else { setStarred(true)} }}>{(sr.isFavorite || starred) ? <Star /> : <StarBorder />}
                                 </IconButton>
                                 {stars}
                             </span>
