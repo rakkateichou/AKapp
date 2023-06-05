@@ -231,7 +231,7 @@ fun Application.configureRouting(database: Database) {
                 return@delete
             }
             val id = call.parameters["id"]?.toInt() ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            favoriteSource.removeFavorite(id)
+            favoriteSource.removeFavorite(user.id, id)
             call.respond(HttpStatusCode.OK)
         }
     }
