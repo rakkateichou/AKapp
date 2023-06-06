@@ -14,6 +14,11 @@ const TaskPaper = (props) => {
         <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }}>
             <div style={{ width: "100%" }}>
                 <span style={{ color: "gray" }}>ID: {sr.taskEntity.id}</span>
+                {props.isNet &&
+                <>
+                <br/><span style={{ color: "gray" }}>Предмет: {sr.taskEntity.subjectName}</span>
+                </>
+                }
                 {(props.hasRating || props.deletable) &&
                     <div style={{ marginTop: "-30px", textAlign: "right" }}>
                         {/* если доступен рейтинг */}
