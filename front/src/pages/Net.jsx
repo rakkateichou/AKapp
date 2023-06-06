@@ -124,7 +124,7 @@ const Net = () => {
                     <>
                         {results.map(result => (
                             // <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
-                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} handleStarTask={(e) => {if (!result.isFavorite) handleStarTask(e, result.taskEntity)}} />
+                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} isNet handleStarTask={(e) => {if (!result.isFavorite) handleStarTask(e, result.taskEntity)}} />
                         ))}
                         <Button variant="text" onClick={searchNextPage}>Загрузить ещё</Button>
                         {searchingNewPage &&
