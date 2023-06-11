@@ -53,7 +53,7 @@ class Sdamgia : WebTaskParser {
         if (subjects.isEmpty()) {
             for (connection in CONNECTIONS) {
                 val doc: Document = try {
-                    connection.data("search", query).get()
+                    connection.maxBodySize(1024 * 80).data("search", query).get()
                 } catch (e: Exception) {
                     println(e.localizedMessage)
                     print("Возможно отсутствует досуп к интернету")
