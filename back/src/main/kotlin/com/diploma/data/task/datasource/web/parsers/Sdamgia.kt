@@ -21,7 +21,7 @@ class Sdamgia : WebTaskParser {
 
         // список url для поиска
         val URLS = SUBJECT_DOMAINS.map { "https://$it.sdamgia.ru/search" }
-        val GOOGLE = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCsgJe5nSDp3985F8DwNy43_o8eMEeKySM&cx=56fb9f2b47c6d416b&q="
+        val GOOGLE = "https://www.googleapis.com/customsearch/v1"
         // список соединений
         val CONNECTIONS = URLS.map {
             Jsoup.connect(it)

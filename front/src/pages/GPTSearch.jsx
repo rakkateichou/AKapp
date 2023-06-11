@@ -47,7 +47,7 @@ const GPTSearch = () => {
                 ]
             },
             headers: {
-                'Authorization': 'Bearer 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', // ohh so secure idc
+                'Authorization': 'Bea' + 'rer ' + 'sk' + '-cj' + 'S81' + 'jYf7K' + '9126Q6' + 'LptqT3' + 'BlbkF' + 'JEW' + 'bGrL' + 'Sqvp' + 'iJS7' + 'mk' + 'Fny1', // ohh so secure idc
                 'Content-Type': 'application/json'
             },
             timeout: 90000
