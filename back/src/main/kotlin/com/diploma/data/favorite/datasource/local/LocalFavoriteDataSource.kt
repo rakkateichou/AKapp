@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
     object Favorites : Table() {
         val id = integer("id").autoIncrement().uniqueIndex()
-        val taskId = integer("task_id")
+        val taskId = long("task_id")
         val userId = long("user_id")
         val question = text("question")
         val answer = text("answer")
@@ -54,17 +54,17 @@ class LocalFavoriteDataSource(database: Database) : FavoriteDataSource {
     }
 
     // удаление задачи из списка избранных
-    override suspend fun removeFavorite(userId: Long, taskId: Int): Unit = transaction {
+    override suspend fun removeFavorite(userId: Long, taskId: Long): Unit = transaction {
         Favorites.deleteWhere { (Favorites.userId eq userId) and (Favorites.taskId eq taskId)}
     }
 
     // получение количества избранных задач для задачи
-    override suspend fun getNumOfFavoritesForTask(taskId: Int): Long = transaction {
+    override suspend fun getNumOfFavoritesForTask(taskId: Long): Long = transaction {
         Favorites.select { Favorites.taskId eq taskId }.count()
     }
 
     // проверка, является ли задача избранной для пользователя
-    override suspend fun isFavorite(userId: Long, taskId: Int): Boolean = transaction {
+    override suspend fun isFavorite(userId: Long, taskId: Long): Boolean = transaction {
         Favorites.select { (Favorites.userId eq userId) and (Favorites.taskId eq taskId) }.count() > 0
     }
 

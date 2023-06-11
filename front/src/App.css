@@ -21,6 +21,64 @@ body {
   font-family: 'MyFont';
 }
 
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeOut 1s linear 3s forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.container {
+  position: relative;
+  will-change: transform;
+}
+
+.container > span {
+  font-family: 'MyFont';
+}
+
+.text {
+  font-size: 70px;
+  font-weight: bold;
+  color: transparent;
+  -webkit-text-stroke: 1px #fff;
+}
+
+.text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #fff;
+  animation: fillText 3s linear forwards;
+}
+
+@keyframes fillText {
+  0% {
+      width: 0;
+  }
+  100% {
+      width: 100%;
+  }
+}
+
 .links a {
   margin-left: 30px;
   padding: 6px;
@@ -67,7 +125,7 @@ body {
 }
 
 .linkProfile {
-  min-width: 52vw;
+  min-width: 40vw;
   text-align: right;
 }
 

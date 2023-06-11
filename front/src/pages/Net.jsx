@@ -1,4 +1,4 @@
-import { Button, Paper, TextField } from "@mui/material";
+import { Button, Paper, Snackbar, TextField } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import ky from "ky";
 import { useEffect, useState } from "react";
@@ -28,6 +28,12 @@ const Net = () => {
     useEffect(() => {
         if (cookies.get('user')) setUser(cookies.get('user'));
     }, []);
+
+    // контроль snack
+    const [snackMessage, setSnackMessage] = useState('');
+    const [snackOpen, setSnackOpen] = useState(false);
+    const showSnackMessage = (message) => { setSnackMessage(message) }
+    useEffect(() => { if (snackMessage != '') setSnackOpen(true) }, [snackMessage])
 
     // поиск задач
     const search = () => {
@@ -71,6 +77,7 @@ const Net = () => {
         result.userId = user.id
         ky.put(`${backendUrl}/favorite`, { json: { user: user, favorite: result } }).json().then((data) => {
             console.log(data)
+            showSnackMessage(`Вопрос добавлен под id ${result.id}`)
         }).catch((error) => { console.log(error); })
     }
 
@@ -80,8 +87,8 @@ const Net = () => {
             <h2>Поиск задач по вопросу</h2>
             <Paper elevation={3} style={paperStyle}>
                 <div>
-                    <TextField id="outlined-basic" label="Ваш запрос" variant="outlined" style={{ width: '80%' }} value={query} onChange={(e) => setQuery(e.target.value)} />
-                    <Button variant='contained' style={{ width: '15%', marginTop: '8px', marginLeft: '10px' }} onClick={search}>Поиск</Button>
+                    <TextField id="outlined-basic" label="Ваш запрос" variant="outlined" style={{ width: '80%' }} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={(ev) => { if (ev.key === 'Enter') search() }} />
+                    <Button variant='contained' style={{ width: '15%', marginLeft: '10px', height: '55px' }} onClick={search}>Поиск</Button>
                 </div>
                 <select style={{ width: '40%', marginTop: "5px" }} value={subject} onChange={handleChange}>
                     <option value="">Все предметы</option>
@@ -124,17 +131,24 @@ const Net = () => {
                     <>
                         {results.map(result => (
                             // <TaskPaper task={result} hasRating={user.login !== undefined} handleStarTask={(e) => handleStarTask(e, result)} />
-                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} isNet handleStarTask={(e) => {if (!result.isFavorite) handleStarTask(e, result.taskEntity)}} />
+                            <TaskPaper key={result.taskEntity.id} response={result} hasRating={user.login !== undefined} isNet handleStarTask={(e) => { if (!result.isFavorite) handleStarTask(e, result.taskEntity) }} />
                         ))}
                         <Button variant="text" onClick={searchNextPage}>Загрузить ещё</Button>
                         {searchingNewPage &&
                             <>
-                                <br/><CircularProgress style={{ marginTop: '50px' }} />
+                                <br /><CircularProgress style={{ marginTop: '50px' }} />
                             </>
                         }
                     </>
                 }
             </Paper>
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={snackOpen}
+                autoHideDuration={1000}
+                onClose={() => { setSnackOpen(false) }}
+                message={snackMessage}
+            />
         </>
     )
 }

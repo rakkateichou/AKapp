@@ -16,7 +16,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
         const val LOCAL_TASK_ID_PREFIX = -1000000
     }
     object Tasks : Table() {
-        val id = integer("id").autoIncrement().uniqueIndex()
+        val id = long("id").autoIncrement().uniqueIndex()
         val question = text("question")
         val answer = text("answer")
         val subjectName = text("subject_name").nullable()
@@ -51,7 +51,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
     }
 
     // сохранение задачи в таблицу задач
-    override suspend fun saveTask(taskEntity: TaskEntity): Int = transaction {
+    override suspend fun saveTask(taskEntity: TaskEntity): Long = transaction {
         Tasks.insert {
             it[question] = taskEntity.question
             it[answer] = taskEntity.answer
@@ -60,7 +60,7 @@ class LocalTaskDataSource(database: Database) : TaskDatabase {
     }
 
     // удаление задачи из таблицы задач по id
-    override suspend fun removeTask(id: Int): Boolean = transaction {
+    override suspend fun removeTask(id: Long): Boolean = transaction {
         val id = id - LOCAL_TASK_ID_PREFIX
         Tasks.deleteWhere { Tasks.id eq id } > 0
     }

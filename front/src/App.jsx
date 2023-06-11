@@ -8,6 +8,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import Restore from './pages/Restore';
+import GPTSearch from './pages/GPTSearch';
 
 // главная функция
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path='/restore' element={ <Restore /> }/>
           <Route path='/signup' element={ <SignUp /> }/>
           <Route path='/profile' element={ <Profile /> }/>
+          <Route path='/gpt' element={ <GPTSearch /> } />
           <Route path='*' element={ <h1>404</h1> } />
         </Routes>
       </BrowserRouter>

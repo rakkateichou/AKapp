@@ -1,7 +1,7 @@
 import Cookies from 'universal-cookie';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Paper, Container, Grid, Typography, IconButton, Modal, Box } from '@mui/material';
+import { TextField, Button, Paper, Container, Grid, Typography, IconButton, Modal, Box, Snackbar } from '@mui/material';
 import ky from 'ky';
 import backendUrl from '../backendUrl';
 import NewPasswordModal from '../components/NewPasswordModal';
@@ -20,6 +20,21 @@ const Profile = () => {
     const [openModal, setOpenModal] = useState(false);
     const handleOpen = () => setOpenModal(true);
     const handleClose = () => setOpenModal(false);
+
+    // удаление задачи
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [taskDelete, setTaskDelete] = useState({})
+    const handleDeleteOpen = (task) => {
+        setTaskDelete(task);
+        setOpenDeleteModal(true);
+    }
+    const handleDeleteClose = () => setOpenDeleteModal(false);
+
+    // контроль snack
+    const [snackDeletedMessage, setSnackDeletedMessage] = useState('');
+    const [snackDeletedOpen, setSnackDeletedOpen] = useState(false);
+    const showSnackMessage = (message) => { setSnackDeletedMessage(message) }
+    useEffect(() => { if (snackDeletedMessage != '') setSnackDeletedOpen(true) }, [snackDeletedMessage])
 
     // состояние изменения пароля
     const [isCPass, setIsCPass] = useState(false);
@@ -44,7 +59,7 @@ const Profile = () => {
 
     // сохранение изменений
     const onModalSave = (newUser) => {
-        ky.put(`${backendUrl}/user/${user.login}/update`, {json: user}).json().then(() => {
+        ky.put(`${backendUrl}/user/${user.login}/update`, { json: user }).json().then(() => {
             setUser(newUser);
             cookies.set('user', user, { path: '/' });
         }).catch((error) => { console.log(error); alert("Ошибка редактирования пользователя") })
@@ -119,11 +134,13 @@ const Profile = () => {
     }
 
     // удаление избранного вопроса
-    const handleDeleteFavorite = (e, favorite) => {
-        ky.delete(`${backendUrl}/favorite/${favorite.id}`, { json: user }).json().then((data) => {
+    const handleDeleteFavorite = () => {
+        ky.delete(`${backendUrl}/favorite/${taskDelete.id}`, { json: user }).json().then((data) => {
             console.log(data)
         }).catch((error) => { console.log(error); })
-        setFavorites(favorites.filter(item => item.id !== favorite.id))
+        setFavorites(favorites.filter(item => item.id !== taskDelete.id))
+        setOpenDeleteModal(false)
+        showSnackMessage(`Удаление вопроса c id ${taskDelete.id}`)
     }
 
     const boxStyle = {
@@ -181,13 +198,15 @@ const Profile = () => {
                     <div style={{ textAlign: 'center' }}>
                         <h4>Избранные вопросы</h4>
                         {favorites.map((favorite) => (
-                            <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={favorite.id}>
-                                <span style={{ color: "gray" }}>ID: {favorite.id}</span><br />
-                                <div style={{ marginTop: "-30px", textAlign: "right" }}><IconButton><Delete onClick={(e) => { handleDeleteFavorite(e, favorite) }} /></IconButton></div>
-                                <b>Предмет: </b> {favorite.subjectName}<br />
-                                <b>Вопрос:</b><br /><span className="dl">{favorite.question}</span><br />
-                                <b>Решение:<b /></b><br /><span className="dl">{favorite.answer}</span>
-                            </Paper>
+                            <>
+                                <Paper elevation={6} style={{ margin: "10px", padding: "15px", textAlign: "left" }} key={favorite.id}>
+                                    <span style={{ color: "gray" }}>ID: {favorite.id}</span><br />
+                                    <div style={{ marginTop: "-30px", textAlign: "right" }}><IconButton><Delete onClick={(e) => { handleDeleteOpen(favorite) }} /></IconButton></div>
+                                    <b>Предмет: </b> {favorite.subjectName}<br />
+                                    <b>Вопрос:</b><br /><span className="dl">{favorite.question}</span><br />
+                                    <b>Решение:<b /></b><br /><span className="dl">{favorite.answer}</span>
+                                </Paper>
+                            </>
                         )
                         )}
                     </div>
@@ -203,6 +222,25 @@ const Profile = () => {
                     <ProfileModalContent user={user} onSave={(user) => { onModalSave(user) }} />
                 </Box>
             </Modal>
+            <Modal
+                open={openDeleteModal}
+                onClose={handleDeleteClose}
+            >
+                <Box sx={boxStyle}>
+                    <Typography>Удалить невозвратно?</Typography>
+                    <div style={{ marginTop: '10px' }}>
+                        <Button variant='outlined' onClick={handleDeleteClose}>Нет</Button>
+                        <Button variant='contained' style={{ marginLeft: '20px' }} onClick={() => { handleDeleteFavorite() }}>Да</Button>
+                    </div>
+                </Box>
+            </Modal>
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={snackDeletedOpen}
+                autoHideDuration={1000}
+                onClose={() => { setSnackDeletedOpen(false) }}
+                message={snackDeletedMessage}
+            />
         </Container>
     );
 }

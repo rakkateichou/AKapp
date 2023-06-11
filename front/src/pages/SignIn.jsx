@@ -22,7 +22,7 @@ const SignIn = () => {
         setStatus(true);
         ky.post(`${backendUrl}/user`, { json: { login: login, password: password } }).json().then((data) => {
             console.log(data);
-            cookies.set('user', data);
+            cookies.set('user', data, { path: '/' });
             setBadLogin(false);
             navigate("/profile");
             window.location.reload();

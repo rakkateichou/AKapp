@@ -21,6 +21,7 @@ class Sdamgia : WebTaskParser {
 
         // список url для поиска
         val URLS = SUBJECT_DOMAINS.map { "https://$it.sdamgia.ru/search" }
+        val GOOGLE = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCsgJe5nSDp3985F8DwNy43_o8eMEeKySM&cx=56fb9f2b47c6d416b&q="
         // список соединений
         val CONNECTIONS = URLS.map {
             Jsoup.connect(it)
@@ -87,9 +88,9 @@ class Sdamgia : WebTaskParser {
 
             val tasksOnThisPage = doc.select("div[class=prob_maindiv]")
             for (task in tasksOnThisPage) {
-                var id = 0
+                var id = 0L
                 for (iElement in task.select("span[class=prob_nums]").select("a")) {
-                    id = iElement.text()?.toInt() ?: 0
+                    id = iElement.text()?.toLong() ?: 0
                 }
 
                 val questionBuilder = StringBuilder()
@@ -97,7 +98,12 @@ class Sdamgia : WebTaskParser {
                     questionBuilder.append(stringFromHtml(qElement.outerHtml())).append("\n");
                 }
                 val questionBuilderStr = questionBuilder.toString().trim()
-                if (!questionBuilderStr.contains(query)) continue // strict search
+
+                // less strict search
+                var flag = true
+                query.split(" ").forEach { if (it.substring(0, it.length-(it.length/4)) in questionBuilderStr) flag = false }
+                if (flag) continue
+
                 val question = questionBuilderStr.replace("&nbsp;", " ");
 
                 val answerBuilder = StringBuilder()
@@ -126,6 +132,7 @@ class Sdamgia : WebTaskParser {
         return builder.toString().trim { it <= ' ' }
     }
 
+    private fun googleSearch(q: String) {println(GOOGLE)}
 //    override suspend fun searchTasks(query: String, page: Int, subjects: ArrayList<String>): List<TaskEntity> {
 //        if (subjects.isEmpty()) {
 //            for (url in URLS) {

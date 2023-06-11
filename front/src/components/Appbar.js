@@ -56,6 +56,10 @@ export default function Appbar(props) {
             <Link to="/net"><span className='linkTool'>Интернет источники</span></Link>
           </div>
 
+          <div className='links'>
+            <Link to="/gpt"><span className='linkTool'>Искусственный интеллект</span></Link>
+          </div>
+
           {!isLoggedIn && 
             <div className='linkProfile'>
               <Link to='/signin'><span className='linkTool'>Вход в аккаунт</span></Link>

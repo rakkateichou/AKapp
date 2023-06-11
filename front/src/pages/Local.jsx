@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import backendUrl from "../backendUrl";
 import ky from "ky";
+import { Snackbar } from "@mui/material";
 
 // страница локальных задач
 const Local = () => {
@@ -18,11 +19,18 @@ const Local = () => {
         else setUser({});
     }, []);
 
+    // контроль snack
+    const [snackMessage, setSnackMessage] = useState('');
+    const [snackOpen, setSnackOpen] = useState(false);
+    const showSnackMessage = (message) => { setSnackMessage(message) }
+    useEffect(() => { if (snackMessage != '') setSnackOpen(true) }, [snackMessage])
+
     // добавление задачи в избранное
     const handleStarTask = (e, result) => {
         result.userId = user.id
         ky.put(`${backendUrl}/favorite`, { json: { user: user, favorite: result } }).json().then((data) => {
             console.log(data)
+            showSnackMessage(`Вопрос добавлен под id ${result.id}`)
         }).catch((error) => { console.log(error); })
     }
 
@@ -35,6 +43,13 @@ const Local = () => {
                     <TaskList user={user} handleStarTask={handleStarTask} />
                 </>
             }
+            <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={snackOpen}
+                autoHideDuration={1000}
+                onClose={() => { setSnackOpen(false) }}
+                message={snackMessage}
+            />
         </>
     );
 }
