@@ -9,7 +9,11 @@ import backendUrl from '../backendUrl';
 import ky from 'ky';
 
 // добавление задачи
-export default function AddTask() {
+export default function AddTask(props) {
+    // список задач
+    const tasks = props.tasks
+    const setTasks = props.setTasks
+
     const paperStyle = { padding: '50px 20px', width: '70vw', margin: '20px auto' }
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
@@ -21,7 +25,10 @@ export default function AddTask() {
             setQuestion("")
             setAnswer("")
             console.log(data);
-            window.location.reload() // better rerender
+            task.id = data
+            const taskWrapper = {taskEntity: task, isFavorite: false, favoriteCount: 0}
+            setTasks([...tasks, taskWrapper])
+            props.showSnackMessage(`Вопрос добавлен под id ${data}`)
         }).catch((error) => { console.log(error); })
     }
 

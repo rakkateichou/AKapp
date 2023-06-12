@@ -13,6 +13,8 @@ const Local = () => {
     const cookies = new Cookies();
     const [user, setUser] = useState(undefined);
 
+    const [tasks, setTasks] = useState([]);
+
     // получение информации о пользователе
     useEffect(() => {
         if (cookies.get('user')) setUser(cookies.get('user'));
@@ -30,7 +32,7 @@ const Local = () => {
         result.userId = user.id
         ky.put(`${backendUrl}/favorite`, { json: { user: user, favorite: result } }).json().then((data) => {
             console.log(data)
-            showSnackMessage(`Вопрос добавлен под id ${result.id}`)
+            showSnackMessage(`Вопрос добавлен в избранное под id ${result.id}`)
         }).catch((error) => { console.log(error); })
     }
 
@@ -39,8 +41,8 @@ const Local = () => {
             {user !== undefined &&
                 <>
                     <TaskSearch user={user} handleStarTask={handleStarTask} />
-                    <AddTask />
-                    <TaskList user={user} handleStarTask={handleStarTask} />
+                    <AddTask showSnackMessage={showSnackMessage} tasks={tasks} setTasks={setTasks}/>
+                    <TaskList user={user} handleStarTask={handleStarTask} tasks={tasks} setTasks={setTasks}/>
                 </>
             }
             <Snackbar

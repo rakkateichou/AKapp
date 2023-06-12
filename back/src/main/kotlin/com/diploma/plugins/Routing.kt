@@ -62,8 +62,7 @@ fun Application.configureRouting(database: Database) {
         put("/local") {
             val task = call.receive<TaskEntity>()
             print(task)
-            localSource.saveTask(task)
-            call.respond(HttpStatusCode.Created)
+            call.respond(HttpStatusCode.Created, localSource.saveTask(task))
         }
         // удаление задания из локальной базы данных
         delete("/local/{id}") {

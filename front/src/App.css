@@ -124,8 +124,23 @@ body {
   white-space: pre-line;
 }
 
+/* Make the Toolbar a flex container */
+.Toolbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Style the leftContent div */
+.leftContent {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
 .linkProfile {
-  min-width: 40vw;
+  margin-left: 20px;
+  margin-right: 20px;
   text-align: right;
 }
 

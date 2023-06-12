@@ -14,7 +14,7 @@ export default function Appbar(props) {
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const cookies = new Cookies();
-  
+
   // useEffect для проверки авторизации
   useEffect(() => {
     if (cookies.get('user')) {
@@ -39,28 +39,29 @@ export default function Appbar(props) {
           >
             <MenuIcon />
           </IconButton> */}
+          <div className='leftContent'>
+            <div className='logo'>
+              <Typography variant="h4" component="span" color='#000000'>
+                <Link to="/">
+                  <span className='font-logo'><b>SOTVETIS</b></span>
+                </Link>
+              </Typography>
+            </div>
 
-          <div className='logo'>
-            <Typography variant="h4" component="span" color='#000000'>
-              <Link to="/">
-                <span className='font-logo'><b>SOTVETIS</b></span>
-              </Link>
-            </Typography>
+            <div className='links'>
+              <Link to="/db"><span className='linkTool'>Локальная база данных</span></Link>
+            </div>
+
+            <div className='links'>
+              <Link to="/net"><span className='linkTool'>Интернет источники</span></Link>
+            </div>
+
+            <div className='links'>
+              <Link to="/gpt"><span className='linkTool'>Искусственный интеллект</span></Link>
+            </div>
           </div>
 
-          <div className='links'>
-            <Link to="/db"><span className='linkTool'>Локальная база данных</span></Link> 
-          </div>
-          
-          <div className='links'>
-            <Link to="/net"><span className='linkTool'>Интернет источники</span></Link>
-          </div>
-
-          <div className='links'>
-            <Link to="/gpt"><span className='linkTool'>Искусственный интеллект</span></Link>
-          </div>
-
-          {!isLoggedIn && 
+          {!isLoggedIn &&
             <div className='linkProfile'>
               <Link to='/signin'><span className='linkTool'>Вход в аккаунт</span></Link>
             </div>
