@@ -4,7 +4,7 @@ import Appbar from "../components/Appbar";
 import SplashScreen from "../components/SplashScreen";
 import Cookies from "universal-cookie";
 
-const Main = () => {
+const Main = (props) => {
 
   const [isSpashVisible, setSplashIsVisible] = useState(false);
 
@@ -61,7 +61,7 @@ const Main = () => {
           backgroundImage: 'url("/main-back.png")',
           position: 'relative'
         }}>
-          <Appbar cn="main-toolbar" appStyle={{ backgroundColor: "transparent" }} elevation={0} />
+          <Appbar cn="main-toolbar" appStyle={{ backgroundColor: "transparent" }} elevation={0} toggleTheme={props.toggleTheme}/>
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
             <p style={{ fontSize: '35px' }}><span className='font-logo'><b>SOTVETIS</b></span> - это база данных ответов на любые вопросы, которые могут возникнуть у студентов во время прохождения их курса обучения.</p>
             <p>Информация собирается как из локальной базы данных, так и с помощью поиска введённых запросов из других источников, находящихся в сети Интернет.</p>

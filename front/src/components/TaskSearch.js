@@ -41,6 +41,7 @@ const TaskSearch = (props) => {
                 {results.length > 0 &&
                     <>
                         <h2>Результаты поиска</h2>
+                        Задач найдено - {results.length}
                         {/* результаты поиска */}
                         {results.map(result => (
                             <TaskPaper key={result.taskEntity.id} response={result} hasRating={props.user.login !== undefined} deletable onDelete={(e) => { handleDeleteTask(e, result.taskEntity) }} handleStarTask={(e) => { if (!result.isFavorite) props.handleStarTask(e, result.taskEntity) }} />

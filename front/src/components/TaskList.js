@@ -30,7 +30,7 @@ const TaskList = (props) => {
         if (props.user.id === undefined) props.user.id = -1;
         fetch(`${backendUrl}/local?userId=` + props.user.id).then(resp => resp.json())
             .then((res) => setTasks(res))
-        // setTasks([{id: 10, question: "aaa", answer: "vvv", rating: 10}])
+        // setTasks([{isFavorite: false, favoriteCount: 10, taskEntity: {id: 10, question: "aaa", answer: "vvv", rating: 10}}])
     }, []);
 
     const handleDeleteTask = () => {

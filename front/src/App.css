@@ -88,16 +88,12 @@ body {
   text-decoration: none;
 }
 
-.toolbar a:link {
+.toolbar #light {
   color: #000000;
 }
 
-.toolbar a:visited {
-  color: #000000;
-}
-
-.toolbar a:hover {
-  color: #000000;
+.toolbar #dark {
+  color: #FFF;
 }
 
 .main-toolbar a {
@@ -151,4 +147,8 @@ body {
 
 .profileInfo {
   padding: 10px;
+}
+
+.MuiPaper-root {
+  background-color: #000000;
 }

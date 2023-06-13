@@ -3,6 +3,7 @@ import ky from 'ky';
 import { Button, CircularProgress, Paper, Snackbar, TextField } from '@mui/material';
 import Cookies from 'universal-cookie';
 import backendUrl from '../backendUrl';
+import { useTheme } from '@emotion/react';
 
 
 const GPTSearch = () => {
@@ -11,6 +12,8 @@ const GPTSearch = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [sseData, setSseData] = useState('');
     const [textFieldValue, setTextFieldValue] = useState('');
+
+    const theme = useTheme();
 
     // cookies
     const cookies = new Cookies();
@@ -98,7 +101,7 @@ const GPTSearch = () => {
             <h2>Поиск вопросов при помощи искусственного интеллекта</h2>
             <Paper elevation={3} style={paperStyle}>
                 <div>
-                    <img src="https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" alt="openai" style={{ width: '5%', width: '55px', height: '55px' }} />
+                    <img src="https://seeklogo.com/images/O/open-ai-logo-8B9BFEDC26-seeklogo.com.png" alt="openai" style={{ width: '5%', width: '55px', height: '55px', filter: theme.palette.mode === 'light' ? 'none' : 'invert(100%)' }} />
                     <TextField id="outlined-basic" label="Ваш запрос" variant="outlined" style={{ width: '75%', marginLeft: '10px' }} value={textFieldValue} onChange={(e) => setTextFieldValue(e.target.value)} multiline />
                     <Button variant='contained' style={{ width: '15%', height: '55px', marginTop: '-45px', marginLeft: '10px' }} onClick={handleButtonPress}>Спросить</Button>
                 </div>
